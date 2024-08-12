@@ -25,22 +25,22 @@ npm install react-native-toast-lite
 
 2. **Configurar el Toast Provider:**
 
-   Asegúrate de envolver tu aplicación con el `ToasterProvider` para que los toasts funcionen correctamente. Añádelo en el archivo principal de tu aplicación:
+   Asegúrate de agregar al punto de entrada de tu aplicación el `Toaster` para que los toasts se rederizen allí:
 
    ```jsx
    import React from 'react';
    import { View, Text } from 'react-native';
-   import { ToasterProvider } from 'react-native-toast-lite';
-   import { Toaster } from './path/to/Toaster'; // Asegúrate de importar el componente Toaster
+ 
+   import { Toaster } from 'react-native-toast-lite'; // Asegúrate de importar el componente Toaster
 
    const App = () => (
-     <ToasterProvider>
+
        <View style={{ flex: 1 }}>
+         <Toaster /> {/* Añade el Toaster en la parte superior de tu aplicación */}
          <Text>Mi aplicación</Text>
          {/* Otros componentes */}
-         <Toaster /> {/* Añade el Toaster en la parte superior de tu aplicación */}
        </View>
-     </ToasterProvider>
+
    );
 
    export default App;
