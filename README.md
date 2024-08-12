@@ -21,6 +21,9 @@ Para instalar la biblioteca, ejecuta el siguiente comando:
 
 ```bash
 npm install react-native-toast-lite
+```
+
+> Ejemplo de Uso
 
 2. **Configurar el Toast Provider:**
 
