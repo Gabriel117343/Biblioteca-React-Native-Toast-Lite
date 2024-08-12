@@ -1,6 +1,6 @@
 {
   "name": "react-native-toast-lite",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Este modulo se trata de mostrar Toast en React Native",
   "main": "./lib\\commonjs\\index.js",
   "scripts": {
@@ -15,6 +15,7 @@
   ],
   "author": "Gabriel-Soliz",
   "license": "MIT",
+  "repository": "https://github.com/Gabriel117343/Biblioteca-React-Native-Toast-Lite",
   "peerDependencies": {
     "react": "^18.2.0",
     "react-native": "^0.74.3",
