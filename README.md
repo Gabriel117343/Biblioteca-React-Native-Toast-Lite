@@ -1,7 +1,5 @@
 # react-native-toast-lite
 
-![react-native-toast-lite]
-
 ## Descripción
 
 **react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones React Native. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación. La biblioteca incluye soporte para varios tipos de mensajes, como errores y éxitos, con una personalización sencilla para adaptarse al diseño de tu aplicación.
@@ -81,4 +79,5 @@ npm install react-native-toast-lite
 
    export default ExampleComponent;
 
+<img src="https://github.com/user-attachments/assets/dfa31aa8-0690-4964-80dd-d1d306c77ffe" alt="Imagen de un Toast de Exito" width="25%" />
 
