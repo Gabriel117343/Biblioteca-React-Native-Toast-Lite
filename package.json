@@ -1,0 +1,85 @@
+{
+  "name": "react-native-toast-lite",
+  "version": "1.0.4",
+  "description": "Este modulo se trata de mostrar Toast en React Native",
+  "main": "./lib\\commonjs\\index.js",
+  "scripts": {
+    "build": "bob build && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "bob build && tsc"
+  },
+  "keywords": [
+    "react-native",
+    "toast",
+    "react-native-toast"
+  ],
+  "author": "Gabriel-Soliz",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-native": "^0.74.3",
+    "react-native-reanimated": "~3.10.1",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@babel/preset-typescript": "^7.24.7",
+    "@types/react": "^18.3.3",
+    "@types/react-native": "^0.73.0",
+    "@typescript-eslint/eslint-plugin": "^8.1.0",
+    "@typescript-eslint/parser": "^8.1.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "prettier": "^3.3.3",
+    "react-native-builder-bob": "^0.29.0",
+    "typescript": "^5.5.4"
+  },
+  "source": "./src\\index.js",
+  "module": "./lib\\module\\index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./lib\\module\\index.js"
+      },
+      "require": {
+        "default": "./lib\\commonjs\\index.js"
+      }
+    }
+  },
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "commonjs",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ]
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
+  "private": false,
+  "dependencies": {
+    "proyectonasaexpo": "file:../appNasa/ProyectoNasaExpo",
+    "react-native-svg": "^15.5.0"
+  }
+}
