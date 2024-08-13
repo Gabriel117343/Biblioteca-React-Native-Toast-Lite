@@ -83,5 +83,8 @@ npm install react-native-toast-lite
    };
 
    export default ExampleComponent;
+   ```
 
+> Resultado:
+ <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
 
