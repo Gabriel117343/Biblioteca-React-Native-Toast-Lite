@@ -1,7 +1,5 @@
 # react-native-toast-lite
 
-![react-native-toast-lite]
-
 ## Descripción
 
 **react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones React Native. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación. La biblioteca incluye soporte para varios tipos de mensajes, como errores y éxitos, con una personalización sencilla para adaptarse al diseño de tu aplicación.
@@ -27,23 +25,23 @@ npm install react-native-toast-lite
 
 2. **Configurar el Toast Provider:**
 
-   Asegúrate de envolver tu aplicación con el `ToasterProvider` para que los toasts funcionen correctamente. Añádelo en el archivo principal de tu aplicación:
+   Asegúrate de agregar al punto de entrada de tu aplicación el `Toaster` para que los toasts se rederizen allí:
 
    ```jsx
    import React from 'react';
    import { View, Text } from 'react-native';
-   import { ToasterProvider } from 'react-native-toast-lite';
-   import { Toaster } from './path/to/Toaster'; // Asegúrate de importar el componente Toaster
+ 
+   import { Toaster } from 'react-native-toast-lite'; // Asegúrate de importar el componente Toaster
 
    const App = () => (
-     <ToasterProvider>
+
        <View style={{ flex: 1 }}>
+         <Toaster /> {/* Añade el Toaster en la parte superior de tu aplicación */}
          <Text>Mi aplicación</Text>
          {/* Otros componentes */}
-         <Toaster />{' '}
-         {/* Añade el Toaster en la parte superior de tu aplicación */}
+         <Toaster /> {/* Añade el Toaster en la parte superior de tu aplicación */}
        </View>
-     </ToasterProvider>
+
    );
 
    export default App;
@@ -85,4 +83,5 @@ npm install react-native-toast-lite
    };
 
    export default ExampleComponent;
-   ```
+
+
