@@ -4,8 +4,8 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
     ecmaFeatures: {
-      jsx: true
-    }
+      jsx: true,
+    },
   },
   extends: [
     'eslint:recommended',
@@ -13,18 +13,18 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
     'prettier',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
   ],
   plugins: ['@typescript-eslint', 'react', 'react-hooks', 'prettier'],
   rules: {
     'react/prop-types': 'off',
     '@typescript-eslint/no-unused-vars': ['error'],
     'react/react-in-jsx-scope': 'off',
-    'prettier/prettier': ['error']
+    'prettier/prettier': ['error'],
   },
   settings: {
     react: {
-      version: 'detect'
-    }
-  }
+      version: 'detect',
+    },
+  },
 };

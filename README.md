@@ -40,12 +40,14 @@ npm install react-native-toast-lite
        <View style={{ flex: 1 }}>
          <Text>Mi aplicación</Text>
          {/* Otros componentes */}
-         <Toaster /> {/* Añade el Toaster en la parte superior de tu aplicación */}
+         <Toaster />{' '}
+         {/* Añade el Toaster en la parte superior de tu aplicación */}
        </View>
      </ToasterProvider>
    );
 
    export default App;
+   ```
 
 3. **Mostrar un Toast:**
 
@@ -58,16 +60,19 @@ npm install react-native-toast-lite
 
    const ExampleComponent = () => {
      const showSuccessToast = () => {
-       toast.success({
-         title: 'Éxito',
-         message: 'Operación completada con éxito.',
+       toast.success('Operación completada con éxito.', {
+        // valores opcionales
+         title: 'Éxito', 
+         position: 'top', 
+         duration: 3000 
        });
      };
 
      const showErrorToast = () => {
-       toast.error({
+       toast.error('Hubo un problema con la operación.', {
          title: 'Error',
-         message: 'Hubo un problema con la operación.',
+         position: 'center',
+         duration: 2500
        });
      };
 
@@ -80,5 +85,4 @@ npm install react-native-toast-lite
    };
 
    export default ExampleComponent;
-
-
+   ```

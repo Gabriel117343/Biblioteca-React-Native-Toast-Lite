@@ -1,13 +1,8 @@
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import React, { FC } from 'react';
+import { SvgProps } from './types';
 
-// estos son tipos de parametros que se le pueden pasar a un componente
-interface SuccessProps extends SvgProps {
-  color?: string;
-  size?: number;
-}
-
-const SvgComponent: FC<SuccessProps> = ({
+const SvgComponent: FC<SvgProps> = ({
   color = 'white',
   size = 16,
   ...props

@@ -1,12 +1,9 @@
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import React from 'react';
-
+import { SvgProps } from './types';
 // estos son tipos de parametros que se le pueden pasar a un componente
-interface ErrorSvgProps extends SvgProps {
-  color?: string;
-  size?: number;
-}
-const ErrorSvg: React.FC<ErrorSvgProps> = ({
+
+const ErrorSvg: React.FC<SvgProps> = ({
   color = 'white',
   size = 16,
   ...props

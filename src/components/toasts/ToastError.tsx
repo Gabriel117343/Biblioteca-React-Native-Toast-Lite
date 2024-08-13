@@ -2,17 +2,19 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Animated, { FadeInUp, FadeOutLeft } from 'react-native-reanimated';
 import ErrorSvg from '../ui/ErrorSvg';
-import { toastStyles } from './commonStyles';
-interface ToastErrorProps {
-  title?: string;
-  message?: string;
-}
-export const ToastError: React.FC<ToastErrorProps> = ({ title, message }) => {
+import { toastStyles, positionStyles } from './commonStyles';
+import { ToastProps } from './types';
+
+export const ToastError: React.FC<ToastProps> = ({
+  title,
+  message,
+  position,
+}) => {
   return (
     <Animated.View
       entering={FadeInUp}
       exiting={FadeOutLeft}
-      style={toastStyles.container}
+      style={[toastStyles.container, positionStyles[position ?? 'top']]}
     >
       <View
         style={[
