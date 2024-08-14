@@ -3,10 +3,12 @@
   "version": "1.0.8",
   "description": "Este modulo se trata de mostrar Toast en React Native",
   "main": "./lib\\commonjs\\index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "build": "bob build && tsc",
+    "clean": "if exist lib (rmdir /s /q lib)",
+    "build": "npm run clean && bob build && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "bob build && tsc"
+    "prepare": "npm run clean && bob build && tsc"
   },
   "keywords": [
     "react-native",
@@ -52,6 +54,7 @@
   "files": [
     "src",
     "lib",
+    "README.md",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__"

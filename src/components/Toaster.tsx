@@ -1,16 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useToastStore } from '../store/storeToast';
-import { ToastError } from './toasts/ToastError';
-import { ToastSuccess } from './toasts/ToastSuccess';
-import { ToastInfo } from './toasts/ToastInfo';
-import { ToastWarning } from './toasts/ToastWarning';
-// Definimos una interfaz para los props de Toaster
 
-// Definimos una interfaz para el objeto toast
+import { Toast } from '../components/toasts/Toast';
+
 interface Toast {
-  id?: number;
-  type: string;
+  type: 'error' | 'success' | 'info' | 'warning' | 'loading';
   message?: string;
   props: {
     title?: string;
@@ -23,48 +18,23 @@ interface Toast {
       | 'top-right'
       | 'bottom-left'
       | 'bottom-right';
+    id?: number;
   };
 }
+// Renderizamos el componente Toaster
 export const Toaster = () => {
   const { toasts } = useToastStore();
 
   return (
     <View style={[styles.container, StyleSheet.absoluteFillObject]}>
-      {toasts.map((toast: Toast) => {
-        if (toast.type === 'error') {
-          return (
-            <ToastError
-              key={toast.id}
-              message={toast.message}
-              {...toast.props}
-            />
-          );
-        } else if (toast.type === 'success') {
-          return (
-            <ToastSuccess
-              key={toast.id}
-              message={toast.message}
-              {...toast.props}
-            />
-          );
-        } else if (toast.type === 'info') {
-          return (
-            <ToastInfo
-              key={toast.id}
-              message={toast.message}
-              {...toast.props}
-            />
-          );
-        } else if (toast.type === 'warning') {
-          return (
-            <ToastWarning
-              key={toast.id}
-              message={toast.message}
-              {...toast.props}
-            />
-          );
-        }
-      })}
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.props.id}
+          type={toast.type}
+          message={toast.message}
+          {...toast.props}
+        />
+      ))}
     </View>
   );
 };

@@ -1,15 +1,7 @@
 import { create } from 'zustand';
 
-export type ToastType =
-  | 'error'
-  | 'success'
-  | 'info'
-  | 'warning'
-  | 'loading'
-  | 'dismiss'; // tipos de toasts
-
+export type ToastType = 'error' | 'success' | 'info' | 'warning' | 'loading';
 export interface ToastProps {
-  id?: number;
   type: ToastType;
   message: string;
   props: {
@@ -23,6 +15,7 @@ export interface ToastProps {
       | 'top-right'
       | 'bottom-left'
       | 'bottom-right';
+    id?: number;
   };
 }
 interface ToastState {
@@ -37,7 +30,8 @@ interface ToastState {
 
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
-  addToast: (type, message, props, id = Date.now()) => {
+  addToast: (type, message, props) => {
+    const id = props.id ?? Date.now(); // si no se pasa un id, se le asigna la fecha actual
     const newToast = { id, type, message, props };
     set((state) => ({
       toasts: [...state.toasts, newToast],
@@ -45,13 +39,13 @@ export const useToastStore = create<ToastState>((set) => ({
 
     setTimeout(() => {
       set((state) => ({
-        toasts: state.toasts.filter((toast) => toast.id !== id),
+        toasts: state.toasts.filter((toast) => toast.props.id !== id),
       }));
     }, props.duration ?? 3000);
   },
   removeToast: (id) =>
     set((state) => ({
-      toasts: state.toasts.filter((toast) => toast.id !== id),
+      toasts: state.toasts.filter((toast) => toast.props.id !== id),
     })),
 }));
 

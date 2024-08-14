@@ -23,7 +23,7 @@ npm install react-native-toast-lite
 
 > Ejemplo de Uso
 
-2. **Configurar el Toast Provider:**
+2. **Configurar el Toast Provider (Toaster):**
 
    Asegúrate de agregar al punto de entrada de tu aplicación el `Toaster` para que los toasts se rederizen allí:
 
@@ -49,7 +49,7 @@ npm install react-native-toast-lite
 
 3. **Mostrar un Toast:**
 
-   Utiliza los métodos `toast.success`, `toast.error`, etc., para mostrar los toasts desde cualquier parte de tu aplicación. A continuación se muestra un ejemplo:
+   Utiliza los métodos `toast.success`, `toast.error`,`toast.info`, etc., para mostrar los toasts desde cualquier parte de tu aplicación. A continuación se muestra un ejemplo:
 
    ```jsx
    import React from 'react';
@@ -83,5 +83,29 @@ npm install react-native-toast-lite
    };
 
    export default ExampleComponent;
+  ```
+
+### Tipos de Toast
+
+| **Tipo**   | **Descripción**                         |
+|------------|-----------------------------------------|
+| `error`    | Muestra un mensaje de error.            |
+| `success`  | Muestra un mensaje de éxito.            |
+| `info`     | Muestra un mensaje informativo.         |
+| `warning`  | Muestra un mensaje de advertencia.      |
+| `loading`  | Muestra un mensaje de carga.            |
+
+### Propiedades de las props
+
+| **Propiedad** | **Tipo**                              | **Descripción**                             |
+|---------------|---------------------------------------|---------------------------------------------|
+| `type`        | `'error'`, `'success'`, `'info'`, `'warning'`, `'loading'` | Tipo de notificación que se mostrará.     |
+| `message`     | `string`                              | Mensaje principal del toast.                |
+| `title`       | `string` (opcional)                   | Título del toast.                           |
+| `duration`    | `number` (opcional)                   | Duración del toast en milisegundos.         |
+| `position`    | `'top'`, `'bottom'`, `'center'`, `'top-left'`, `'top-right'`, `'bottom-left'`, `'bottom-right'` | Posición en la pantalla donde se mostrará el toast. |
+| `id`          | `number` (opcional)                   | Identificador único del toast.              |
 
 
+> Resultado:
+ <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
