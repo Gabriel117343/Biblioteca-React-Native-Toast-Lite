@@ -51,3 +51,6 @@ temp/
 src/
 
 .git
+.map
+*.map
+.babelrc

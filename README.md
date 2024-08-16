@@ -76,6 +76,7 @@ npm install react-native-toast-lite@latest
         },
       });
     };
+   toast.success("¡Gracias por visitarnosss!", { toastStyle: 'dark', icon : '🚀'})
   
     const showErrorToast = () => {
       toast.error('Hubo un problema con la operación.', {
@@ -91,7 +92,27 @@ npm install react-native-toast-lite@latest
         },
       });
     };
-  
+    // Ejemplo de uso real
+    const enviarDatos = () => {
+      toast.loading("Cargando...", {
+        id: "cargaDatos",
+        duration: 2000,
+        position: top, // estado persistente si cambia el loading a success
+        toastStyle: "dark", // esta prop tambien se mantiene
+        icon: '⏳', // Icono personalizado (emoji)
+      });
+      try {
+        const { success, message } = axios.post('https//....')
+        if (success) { 
+          toast.info(message, {title: 'Exito!'}); // heredara position y toastStyle
+        } else {
+          // toast ...
+        }
+      } catch(error) {
+          // toast ...
+      }
+    }
+    
     return (
       <View>
         <Button title="Mostrar éxito" onPress={showSuccessToast} />
@@ -101,6 +122,7 @@ npm install react-native-toast-lite@latest
   };
   
   export default ExampleComponent;
+  ```
   
 ### Tipos de Toast
 
@@ -119,8 +141,8 @@ npm install react-native-toast-lite@latest
 | `id`           | `number` (opcional)                                                      | Identificador único opcional para el toast.                                               |
 | `title`        | `string` (opcional)                                                      | Título opcional del toast.                                                                |
 | `duration`     | `number` (opcional)                                                      | Duración en milisegundos que el toast permanecerá visible.                                |
-| `position`     | `'top' | 'bottom' | 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'` (opcional) | Posición del toast en la pantalla.                                                       |
-| `toastStyle`   | `'primary' | 'secondary' | 'primaryDark' | 'dark'` (opcional)          | Estilo del toast.                                                                         |
+| `position`     | `'top'-'bottom'-'center'-'top-left'-'top-right'-'bottom-left'-'bottom-right'` (opcional) | Posición del toast en la pantalla.                                                       |
+| `toastStyle`   | `'primary'-'secondary'-'primaryDark'-'dark'` (opcional)          | Estilo del toast.                                                                         |
 | `progress`     | `boolean` (opcional)                                                     | Indica si se debe mostrar una barra de progreso.                                          |
 | `icon`         | `string` (opcional)                                                      | Emoji o ícono opcional que se muestra junto al mensaje del toast.                         |
 | `border`       | `boolean` (opcional)                                                     | Determina si el toast debe tener un borde visible.                                        |
@@ -136,9 +158,10 @@ npm install react-native-toast-lite@latest
 | `backgroundColor`| `string` (opcional)                                | Color de fondo del toast.                                |
 | `borderColor`    | `string` (opcional)                                | Color del borde del toast.                               |
 | `iconSize`       | `number` (opcional)                                | Tamaño del ícono o emoji en el toast.                    |
-| `iconStyle`      | `'solid' | 'outline' | 'default'` (opcional)      | Estilo del ícono (sólido, contorno o predeterminado).     |
+| `iconStyle`      | `'solid'-'outline'-'default'` (opcional)      | Estilo del ícono (sólido, contorno o predeterminado).     |
 | `loadingColor`   | `string` (opcional)                                | Color del indicador de carga en el toast.                |
 | `progressColor`  | `string` (opcional)                                | Color de la barra de progreso en el toast.               |
 
 > Resultado:
- <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
+
+<img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />

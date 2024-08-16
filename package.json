@@ -1,15 +1,22 @@
 {
   "name": "react-native-toast-lite",
-  "version": "1.8.0",
+  "version": "1.8.3",
   "description": "Este modulo se trata de mostrar Toast en React Native",
-  "main": "./lib\\commonjs\\index.js",
-  "types": "lib/react-native-toast-lite.d.ts",
-  "scripts": {
-    "clean": "if exist lib (rmdir /s /q lib)",
-    "build": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts lib\\",
+  "main": "./dist\\module\\index.js",
+  "types": "dist/module/react-native-toast-lite.d.ts","scripts": {
+    "clean": "if exist dist (rimraf dist) && if exist dist\\module (rimraf dist\\module\\**\\*.js.map)",
+    "build": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts dist\\module\\ && copy types\\toastTypes.d.ts dist\\module\\",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts lib\\"
+    "prepare": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts dist\\module\\ && copy types\\toastTypes.d.ts dist\\module\\",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
   },
+  "size-limit": [
+    {
+      "path": "dist/module/index.js",
+      "limit": "5 KB"
+    }
+  ],
   "keywords": [
     "react-native",
     "toast",
@@ -28,6 +35,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-typescript": "^7.24.7",
+    "@size-limit/preset-small-lib": "^11.1.4",
     "@types/react": "^18.3.3",
     "@types/react-native": "^0.73.0",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
@@ -38,51 +46,38 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "prettier": "^3.3.3",
     "react-native-builder-bob": "^0.29.0",
+    "rimraf": "^6.0.1",
+    "size-limit": "^11.1.4",
     "typescript": "^5.5.4"
   },
   "source": "./src\\index.js",
-  "module": "./lib\\module\\index.js",
+  "module": "./dist\\module\\index.js",
   "exports": {
-    ".": {
-      "import": {
-        "default": "./lib\\module\\index.js"
-      },
-      "require": {
-        "default": "./lib\\commonjs\\index.js"
-      }
-    }
+    ".": "./dist/module/index.js"
   },
   "files": [
     "src",
-    "lib",
+    "dist",
     "types",
     "README.md",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "types/react-native-toast-lite.d.ts"
+    "!dist/module/**/*.js.map",
+    "types/react-native-toast-lite.d.ts",
+    "types/toastTypes.d.ts"
   ],
   "react-native-builder-bob": {
     "source": "src",
-    "output": "lib",
+    "output": "dist/",
     "targets": [
-      [
-        "commonjs",
-        {
-          "esm": true
-        }
-      ],
-      [
-        "module",
-        {
-          "esm": true
-        }
-      ]
+    ["module", { "esm": true, "sourceMaps": false }]
     ]
+
   },
   "eslintIgnore": [
     "node_modules/",
-    "lib/"
+    "dist/"
   ],
   "private": false
 }

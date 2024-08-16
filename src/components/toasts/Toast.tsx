@@ -23,7 +23,7 @@ export const Toast: React.FC<ToastProps> = ({
   position,
   toastStyle = 'primary',
   icon,
-  duration = 3000,
+  duration, // 3000 ms por defecto
   progress = true,
   border = true,
   styles, // objeto de estilos personalizados

@@ -1,40 +1,8 @@
 import { create } from 'zustand';
+import { ToastProps, ToastType } from '../../types/toastTypes';
 
-export type ToastType = 'error' | 'success' | 'info' | 'warning' | 'loading';
-export interface ToastProps {
-  type: ToastType;
-  message: string;
-  props?: {
-    id?: number;
-    title?: string;
-    duration?: number;
-    position?:
-      | 'top'
-      | 'bottom'
-      | 'center'
-      | 'top-left'
-      | 'top-right'
-      | 'bottom-left'
-      | 'bottom-right';
+// ESTE ES EL ESTADO PRINCIPAL DE LA APLICACIÓN PARA LOS TOASTS QUE SE MUESTRAN EN LA PANTALLA
 
-    toastStyle?: 'primary' | 'secondary' | 'primaryDark' | 'dark';
-    progress?: boolean;
-    icon?: string; // emoji
-    border?: boolean;
-    styles?: {
-      titleColor?: string;
-      textColor?: string;
-      titleSize?: number;
-      textSize?: number;
-      backgroundColor?: string;
-      borderColor?: string;
-      iconSize?: number;
-      iconStyle?: 'solid' | 'outline' | 'default';
-      loadingColor?: string;
-      progressColor?: string;
-    };
-  };
-}
 interface ToastState {
   toasts: (ToastProps & { id: number; date: Date })[]; // indicamos que cada toast tendrá un id y una fecha además de las propiedades de ToastProps
   addToast: (
@@ -50,8 +18,20 @@ export const useToastStore = create<ToastState>((set) => ({
   addToast: (type, message, props) => {
     const id = props?.id ?? Math.floor(Math.random() * 1000);
     const date = new Date();
-    let newToast = { id, type, message, props, date };
-    // si existe algún toast con  la id repetida se elimina y se agrega el nuevo
+    // la duración por defecto prioriza la duración pasada en props
+    const defaultDuration = !props?.duration
+      ? type === 'loading'
+        ? 100000
+        : 3000
+      : props.duration;
+    let newToast = {
+      id,
+      type,
+      message,
+      props,
+      date,
+    };
+    // si existe algún toast con  la id repetida se elimina y se agrega el nuevo manteniendo algunas propiedades
 
     set((state) => {
       const existingToastIndex = state.toasts.findIndex(
@@ -65,6 +45,7 @@ export const useToastStore = create<ToastState>((set) => ({
           message,
           props: {
             ...props,
+            duration: defaultDuration, // se sobreescribe la duración
             // estos valores se sobreescriben si se pasan en props y se mantienen si no
             position: props?.position ?? existingToast.props?.position,
             toastStyle: props?.toastStyle ?? existingToast.props?.toastStyle,
@@ -76,7 +57,13 @@ export const useToastStore = create<ToastState>((set) => ({
         updatedToasts[existingToastIndex] = newToast;
         return { toasts: updatedToasts };
       } else {
-        return { toasts: [...state.toasts, newToast] };
+        // se restaura la duración por defecto si no se pasa en props
+        return {
+          toasts: [
+            ...state.toasts,
+            { ...newToast, props: { ...props, duration: defaultDuration } },
+          ],
+        };
       }
     });
 
@@ -84,7 +71,7 @@ export const useToastStore = create<ToastState>((set) => ({
       set((state) => ({
         toasts: state.toasts.filter((toast) => toast.date !== date),
       }));
-    }, props?.duration ?? 3000);
+    }, defaultDuration);
   },
   removeToast: (id) =>
     set((state) => ({

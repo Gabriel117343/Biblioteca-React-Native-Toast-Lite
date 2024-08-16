@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useToastStore, ToastProps } from '../store/storeToast';
-
+import { useToastStore } from '../store/storeToast';
+import { ToastProps } from '../../types/toastTypes';
 import { Toast } from '../components/toasts/Toast';
 
 // Renderizamos el componente Toaster
@@ -10,9 +10,9 @@ export const Toaster = () => {
 
   return (
     <View style={[styles.container, StyleSheet.absoluteFillObject]}>
-      {toasts.map((toast: ToastProps, index) => (
+      {toasts.map((toast: ToastProps) => (
         <Toast
-          key={index}
+          key={toast?.props?.id}
           type={toast.type}
           message={toast.message}
           {...toast.props}
