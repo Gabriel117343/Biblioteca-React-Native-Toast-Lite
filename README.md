@@ -121,10 +121,16 @@ npm install react-native-toast-lite@latest
     );
   };
   
+<<<<<<< HEAD
   export default ExampleComponent;
   ```
+=======
+>>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
   
-### Tipos de Toast
+  export default ExampleComponent;
+  ```
+
+  ### Tipos de Toast
 
 | **Tipo**   | **Descripción**                         |
 |------------|-----------------------------------------|
@@ -142,7 +148,11 @@ npm install react-native-toast-lite@latest
 | `title`        | `string` (opcional)                                                      | Título opcional del toast.                                                                |
 | `duration`     | `number` (opcional)                                                      | Duración en milisegundos que el toast permanecerá visible.                                |
 | `position`     | `'top'-'bottom'-'center'-'top-left'-'top-right'-'bottom-left'-'bottom-right'` (opcional) | Posición del toast en la pantalla.                                                       |
+<<<<<<< HEAD
 | `toastStyle`   | `'primary'-'secondary'-'primaryDark'-'dark'` (opcional)          | Estilo del toast.                                                                         |
+=======
+| `toastStyle`   | `'primary' | 'secondary' | 'primaryDark' | 'dark'` (opcional)`          | Estilo del toast.                                                                         |
+>>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
 | `progress`     | `boolean` (opcional)                                                     | Indica si se debe mostrar una barra de progreso.                                          |
 | `icon`         | `string` (opcional)                                                      | Emoji o ícono opcional que se muestra junto al mensaje del toast.                         |
 | `border`       | `boolean` (opcional)                                                     | Determina si el toast debe tener un borde visible.                                        |
@@ -158,10 +168,18 @@ npm install react-native-toast-lite@latest
 | `backgroundColor`| `string` (opcional)                                | Color de fondo del toast.                                |
 | `borderColor`    | `string` (opcional)                                | Color del borde del toast.                               |
 | `iconSize`       | `number` (opcional)                                | Tamaño del ícono o emoji en el toast.                    |
+<<<<<<< HEAD
 | `iconStyle`      | `'solid'-'outline'-'default'` (opcional)      | Estilo del ícono (sólido, contorno o predeterminado).     |
+=======
+| `iconStyle`      | `'solid'-'outline'-'default'` (opcional)`      | Estilo del ícono (sólido, contorno o predeterminado).     |
+>>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
 | `loadingColor`   | `string` (opcional)                                | Color del indicador de carga en el toast.                |
 | `progressColor`  | `string` (opcional)                                | Color de la barra de progreso en el toast.               |
 
 > Resultado:
+<<<<<<< HEAD
 
 <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
+=======
+ <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
+>>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
