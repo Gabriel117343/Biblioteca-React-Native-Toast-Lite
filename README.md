@@ -83,29 +83,5 @@ npm install react-native-toast-lite
    };
 
    export default ExampleComponent;
-  ```
-
-### Tipos de Toast
-
-| **Tipo**   | **Descripción**                         |
-|------------|-----------------------------------------|
-| `error`    | Muestra un mensaje de error.            |
-| `success`  | Muestra un mensaje de éxito.            |
-| `info`     | Muestra un mensaje informativo.         |
-| `warning`  | Muestra un mensaje de advertencia.      |
-| `loading`  | Muestra un mensaje de carga.            |
-
-### Propiedades de las props
-
-| **Propiedad** | **Tipo**                              | **Descripción**                             |
-|---------------|---------------------------------------|---------------------------------------------|
-| `type`        | `'error'`, `'success'`, `'info'`, `'warning'`, `'loading'` | Tipo de notificación que se mostrará.     |
-| `message`     | `string`                              | Mensaje principal del toast.                |
-| `title`       | `string` (opcional)                   | Título del toast.                           |
-| `duration`    | `number` (opcional)                   | Duración del toast en milisegundos.         |
-| `position`    | `'top'`, `'bottom'`, `'center'`, `'top-left'`, `'top-right'`, `'bottom-left'`, `'bottom-right'` | Posición en la pantalla donde se mostrará el toast. |
-| `id`          | `number` (opcional)                   | Identificador único del toast.              |
 
 
-> Resultado:
- <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
