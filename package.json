@@ -1,14 +1,14 @@
 {
   "name": "react-native-toast-lite",
-  "version": "1.0.8",
+  "version": "1.8.0",
   "description": "Este modulo se trata de mostrar Toast en React Native",
   "main": "./lib\\commonjs\\index.js",
-  "types": "lib/index.d.ts",
+  "types": "lib/react-native-toast-lite.d.ts",
   "scripts": {
     "clean": "if exist lib (rmdir /s /q lib)",
-    "build": "npm run clean && bob build && tsc",
+    "build": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts lib\\",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "npm run clean && bob build && tsc"
+    "prepare": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts lib\\"
   },
   "keywords": [
     "react-native",
@@ -22,6 +22,7 @@
     "react": "^18.2.0",
     "react-native": "^0.74.3",
     "react-native-reanimated": "^3.10.1",
+    "react-native-svg": "^15.5.0",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
@@ -54,10 +55,12 @@
   "files": [
     "src",
     "lib",
+    "types",
     "README.md",
     "!**/__tests__",
     "!**/__fixtures__",
-    "!**/__mocks__"
+    "!**/__mocks__",
+    "types/react-native-toast-lite.d.ts"
   ],
   "react-native-builder-bob": {
     "source": "src",
@@ -81,9 +84,5 @@
     "node_modules/",
     "lib/"
   ],
-  "private": false,
-  "dependencies": {
-    "proyectonasaexpo": "file:../appNasa/ProyectoNasaExpo",
-    "react-native-svg": "^15.5.0"
-  }
+  "private": false
 }

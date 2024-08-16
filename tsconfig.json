@@ -8,13 +8,17 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "baseUrl": "./src",
+    "baseUrl": "./",
+    "paths": {
+      "@store/*": ["src/store/*"],
+      "*": ["types/*"],
+    },
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "outDir": "./lib", // Directorio de salida
     "rootDir": "./src" // Directorio raíz
   },
-  "include": ["src/**/*"],
+  "include": ["types/**/*.d.ts", "src/**/*"],
   "exclude": ["node_modules", "lib"]
 }

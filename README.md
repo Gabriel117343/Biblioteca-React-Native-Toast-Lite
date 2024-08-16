@@ -18,7 +18,7 @@
 Para instalar la biblioteca, ejecuta el siguiente comando:
 
 ```bash
-npm install react-native-toast-lite
+npm install react-native-toast-lite@latest
 ```
 
 > Ejemplo de Uso
@@ -49,39 +49,96 @@ npm install react-native-toast-lite
 
 3. **Mostrar un Toast:**
 
-   Utiliza los métodos `toast.success`, `toast.error`,`toast.info`, etc., para mostrar los toasts desde cualquier parte de tu aplicación. A continuación se muestra un ejemplo:
+  Utiliza los métodos toast.success, toast.error, toast.info, toast.warning, y toast.loading para mostrar toasts desde cualquier parte de tu aplicación.
+
+  Estos métodos te permiten mostrar mensajes con diferentes tipos de notificaciones y configuraciones personalizables.
+  A continuación se muestra un ejemplo:
 
    ```jsx
-   import React from 'react';
-   import { Button, View } from 'react-native';
-   import { toast } from 'react-native-toast-lite';
+  import React from 'react';
+  import { Button, View } from 'react-native';
+  import { toast } from 'react-native-toast-lite';
+  
+  const ExampleComponent = () => {
+    const showSuccessToast = () => {
+      toast.success('Operación completada con éxito.', {
+        title: 'Éxito', // Título del toast (opcional)
+        position: 'top-right', // Posición del toast (opcional)
+        duration: 4000, // Duración del toast en milisegundos (opcional)
+        progress: true, // Muestra el indicador de progreso (opcional)
+        border: true, // Muestra un borde alrededor del toast (opcional)
+        styles: {
+          backgroundColor: '#28a745', // Color de fondo personalizado
+          borderColor: '#155724', // Color del borde personalizado
+          titleColor: '#fff', // Color del título personalizado
+          textColor: '#ddd', // Color del texto personalizado
+          progressColor: '#ffc107', // Color del indicador de progreso personalizado
+        },
+      });
+    };
+  
+    const showErrorToast = () => {
+      toast.error('Hubo un problema con la operación.', {
+        title: 'Error',
+        position: 'center',
+        duration: 2500,
+        icon: '🚫', // Icono personalizado (emoji)
+        styles: {
+          backgroundColor: '#dc3545', // Color de fondo personalizado
+          borderColor: '#721c24', // Color del borde personalizado
+          titleColor: '#fff', // Color del título personalizado
+          textColor: '#f8d7da', // Color del texto personalizado
+        },
+      });
+    };
+  
+    return (
+      <View>
+        <Button title="Mostrar éxito" onPress={showSuccessToast} />
+        <Button title="Mostrar error" onPress={showErrorToast} />
+      </View>
+    );
+  };
+  
+  export default ExampleComponent;
+  
+### Tipos de Toast
 
-   const ExampleComponent = () => {
-     const showSuccessToast = () => {
-       toast.success('Operación completada con éxito.', {
-        // valores opcionales
-         title: 'Éxito', 
-         position: 'top', 
-         duration: 3000 
-       });
-     };
+| **Tipo**   | **Descripción**                         |
+|------------|-----------------------------------------|
+| `error`    | Muestra un mensaje de error.            |
+| `success`  | Muestra un mensaje de éxito.            |
+| `info`     | Muestra un mensaje informativo.         |
+| `warning`  | Muestra un mensaje de advertencia.      |
+| `loading`  | Muestra un mensaje de carga.            |
 
-     const showErrorToast = () => {
-       toast.error('Hubo un problema con la operación.', {
-         title: 'Error',
-         position: 'center',
-         duration: 2500
-       });
-     };
+### Propiedades de las props
 
-     return (
-       <View>
-         <Button title="Mostrar éxito" onPress={showSuccessToast} />
-         <Button title="Mostrar error" onPress={showErrorToast} />
-       </View>
-     );
-   };
+| **Propiedad**  | **Tipo**                                                                 | **Descripción**                                                                           |
+|----------------|--------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| `id`           | `number` (opcional)                                                      | Identificador único opcional para el toast.                                               |
+| `title`        | `string` (opcional)                                                      | Título opcional del toast.                                                                |
+| `duration`     | `number` (opcional)                                                      | Duración en milisegundos que el toast permanecerá visible.                                |
+| `position`     | `'top' | 'bottom' | 'center' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'` (opcional) | Posición del toast en la pantalla.                                                       |
+| `toastStyle`   | `'primary' | 'secondary' | 'primaryDark' | 'dark'` (opcional)          | Estilo del toast.                                                                         |
+| `progress`     | `boolean` (opcional)                                                     | Indica si se debe mostrar una barra de progreso.                                          |
+| `icon`         | `string` (opcional)                                                      | Emoji o ícono opcional que se muestra junto al mensaje del toast.                         |
+| `border`       | `boolean` (opcional)                                                     | Determina si el toast debe tener un borde visible.                                        |
 
-   export default ExampleComponent;
+### propiedad de los estilos personalizados
 
+| **Propiedad**    | **Tipo**                                            | **Descripción**                                            |
+|------------------|-----------------------------------------------------|------------------------------------------------------------|
+| `titleColor`     | `string` (opcional)                                | Color del título del toast.                               |
+| `textColor`      | `string` (opcional)                                | Color del texto del toast.                                |
+| `titleSize`      | `number` (opcional)                                | Tamaño de la fuente del título del toast.                 |
+| `textSize`       | `number` (opcional)                                | Tamaño de la fuente del texto del toast.                  |
+| `backgroundColor`| `string` (opcional)                                | Color de fondo del toast.                                |
+| `borderColor`    | `string` (opcional)                                | Color del borde del toast.                               |
+| `iconSize`       | `number` (opcional)                                | Tamaño del ícono o emoji en el toast.                    |
+| `iconStyle`      | `'solid' | 'outline' | 'default'` (opcional)      | Estilo del ícono (sólido, contorno o predeterminado).     |
+| `loadingColor`   | `string` (opcional)                                | Color del indicador de carga en el toast.                |
+| `progressColor`  | `string` (opcional)                                | Color de la barra de progreso en el toast.               |
 
+> Resultado:
+ <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
