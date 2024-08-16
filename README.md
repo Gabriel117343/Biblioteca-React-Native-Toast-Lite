@@ -100,9 +100,11 @@ npm install react-native-toast-lite@latest
     );
   };
   
-  export default ExampleComponent;
   
-### Tipos de Toast
+  export default ExampleComponent;
+  ```
+
+  ### Tipos de Toast
 
 | **Tipo**   | **Descripción**                         |
 |------------|-----------------------------------------|
