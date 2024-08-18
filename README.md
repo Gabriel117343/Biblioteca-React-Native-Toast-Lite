@@ -156,7 +156,7 @@ npm install react-native-toast-lite
 | `progress`           | `boolean` _(opcional)_                                        | Indica si se muestra la barra de progreso.                                                                |
 | `icon`               | `string` _(opcional)_                                         | Emoji o carácter a mostrar como ícono en el toast.                                                        |
 | `border`             | `boolean` _(opcional)_                                        | Indica si se muestra un borde alrededor del toast.                                                        |
-| `inheritStyles`      | `boolean`_(opcional)                 |                        | Indica si se heredan los styles del toast con el mismo id |
+| `inheritStyles`      | `boolean` _(opcional)_                                        | Indica si se heredan los styles del toast con el mismo id  
 
 ### propiedad de los estilos personalizados
 
