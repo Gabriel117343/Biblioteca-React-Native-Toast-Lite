@@ -33,13 +33,12 @@ export const useToastStore = create((set) => ({
                         position: props?.position ?? existingToast.props?.position,
                         toastStyle: props?.toastStyle ?? existingToast.props?.toastStyle,
                         styles: {
-                            ...existingToast.props?.styles,
-                            top: props?.styles?.top ?? existingToast.props?.styles?.top,
-                            bottom: props?.styles?.bottom ?? existingToast.props?.styles?.bottom,
-                            left: props?.styles?.left ?? existingToast.props?.styles?.left,
-                            right: props?.styles?.right ?? existingToast.props?.styles?.right,
-                            width: props?.styles?.width ?? existingToast.props?.styles?.width,
-                            height: props?.styles?.height ?? existingToast.props?.styles?.height,
+                            // por defecto se heredan los estilos de toastStyles a menos que se indique lo contrario, inheriStyles sera undefined si no se pasa en props
+                            ...(props?.inheritStyles !== false && {
+                                ...existingToast.props?.styles,
+                            }),
+                            // los valores de ...props.styles sobreesciben los valores de ...existingToast.props.
+                            ...props?.styles,
                         },
                     },
                     date,

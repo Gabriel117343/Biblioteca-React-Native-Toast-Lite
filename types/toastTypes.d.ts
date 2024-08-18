@@ -21,6 +21,7 @@ export interface ToastProps {
     progress?: boolean;
     icon?: string; // emoji
     border?: boolean;
+    inheritStyles?: boolean;
     styles?: {
       titleColor?: string;
       textColor?: string;

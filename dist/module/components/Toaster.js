@@ -14,7 +14,7 @@ export const Toaster = () => {
   return /*#__PURE__*/_jsx(View, {
     style: [toastStyles.containerToast, StyleSheet.absoluteFillObject],
     children: toasts.map(toast => /*#__PURE__*/_jsx(Toast, {
-      id: toast.props?.id || 0 // el 0 nunca se aplicara
+      id: toast.props.id // ! indica a typescript que no puede ser null o undefined
       ,
       type: toast.type,
       message: toast.message,

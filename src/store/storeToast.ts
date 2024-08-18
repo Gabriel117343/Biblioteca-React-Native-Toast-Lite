@@ -15,7 +15,7 @@ interface ToastState {
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
   addToast: (type, message, props) => {
-    const id = props?.id ?? Math.floor(Math.random() * 1000);
+    const id = props?.id ?? Math.floor(Math.random() * 100);
     const date = new Date();
     // la duración por defecto prioriza la duración pasada en props
     const defaultDuration = !props?.duration
@@ -49,15 +49,12 @@ export const useToastStore = create<ToastState>((set) => ({
             position: props?.position ?? existingToast.props?.position,
             toastStyle: props?.toastStyle ?? existingToast.props?.toastStyle,
             styles: {
-              ...existingToast.props?.styles,
-              top: props?.styles?.top ?? existingToast.props?.styles?.top,
-              bottom:
-                props?.styles?.bottom ?? existingToast.props?.styles?.bottom,
-              left: props?.styles?.left ?? existingToast.props?.styles?.left,
-              right: props?.styles?.right ?? existingToast.props?.styles?.right,
-              width: props?.styles?.width ?? existingToast.props?.styles?.width,
-              height:
-                props?.styles?.height ?? existingToast.props?.styles?.height,
+              // por defecto se heredan los estilos de toastStyles a menos que se indique lo contrario, inheriStyles sera undefined si no se pasa en props
+              ...(props?.inheritStyles !== false && {
+                ...existingToast.props?.styles,
+              }),
+              // los valores de ...props.styles sobreesciben los valores de ...existingToast.props.
+              ...props?.styles,
             },
           },
           date,

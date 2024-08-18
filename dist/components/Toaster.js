@@ -6,5 +6,5 @@ import { toastStyles } from '../components/toasts/commonStyles';
 export const Toaster = () => {
     const { toasts } = useToastStore();
     // se renderiza el componente Toast con las props de cada toast
-    return (React.createElement(View, { style: [toastStyles.containerToast, StyleSheet.absoluteFillObject] }, toasts.map((toast) => (React.createElement(Toast, { key: toast.props?.id, id: toast.props?.id || 0, type: toast.type, message: toast.message, ...toast.props })))));
+    return (React.createElement(View, { style: [toastStyles.containerToast, StyleSheet.absoluteFillObject] }, toasts.map((toast) => (React.createElement(Toast, { key: toast.props?.id, id: toast.props.id, type: toast.type, message: toast.message, ...toast.props })))));
 };

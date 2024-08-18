@@ -13,7 +13,7 @@ export const Toaster = () => {
       {toasts.map((toast: ToastProps) => (
         <Toast
           key={toast.props?.id}
-          id={toast.props?.id || 0} // el 0 nunca se aplicara
+          id={toast.props!.id!} // ! indica a typescript que no puede ser null o undefined
           type={toast.type}
           message={toast.message}
           {...toast.props}
