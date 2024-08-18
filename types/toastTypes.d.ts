@@ -16,6 +16,8 @@ export interface ToastProps {
       | 'bottom-left'
       | 'bottom-right';
     toastStyle?: 'primary' | 'secondary' | 'primaryDark' | 'dark';
+    animationType?: 'fade' | 'slide' | 'bounce';
+    animationDuration?: number;
     progress?: boolean;
     icon?: string; // emoji
     border?: boolean;
@@ -25,11 +27,18 @@ export interface ToastProps {
       titleSize?: number;
       textSize?: number;
       backgroundColor?: string;
+      borderRadius?: number;
       borderColor?: string;
       iconSize?: number;
       iconStyle?: 'solid' | 'outline' | 'default';
       loadingColor?: string;
       progressColor?: string;
+      width?: number;
+      height?: number;
+      top?: number;
+      bottom?: number;
+      left?: number;
+      right?: number;
     };
   };
 }

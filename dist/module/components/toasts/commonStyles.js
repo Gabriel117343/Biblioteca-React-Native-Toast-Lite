@@ -7,14 +7,11 @@ export const toastStyles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
-    alignItems: 'center'
+    bottom: 0
+    // alignItems: 'center',
   },
   container: {
     position: 'absolute',
-    minHeight: 60,
-    width: '90%',
-    borderRadius: 15,
     borderWidth: 1,
     marginHorizontal: 8,
     marginVertical: 8,
@@ -52,7 +49,7 @@ export const toastStyles = StyleSheet.create({
     padding: 15
   },
   progressContainer: {
-    height: 4,
+    height: 3,
     width: '100%',
     paddingHorizontal: 0,
     margin: 0,

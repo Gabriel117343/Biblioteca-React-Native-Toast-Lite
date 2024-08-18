@@ -3,16 +3,17 @@ import { View, StyleSheet } from 'react-native';
 import { useToastStore } from '../store/storeToast';
 import { ToastProps } from '../../types/toastTypes';
 import { Toast } from '../components/toasts/Toast';
+import { toastStyles } from '../components/toasts/commonStyles';
 
-// Renderizamos el componente Toaster
 export const Toaster = () => {
   const { toasts } = useToastStore();
-
+  // se renderiza el componente Toast con las props de cada toast
   return (
-    <View style={[styles.container, StyleSheet.absoluteFillObject]}>
+    <View style={[toastStyles.containerToast, StyleSheet.absoluteFillObject]}>
       {toasts.map((toast: ToastProps) => (
         <Toast
-          key={toast?.props?.id}
+          key={toast.props?.id}
+          id={toast.props?.id || 0} // el 0 nunca se aplicara
           type={toast.type}
           message={toast.message}
           {...toast.props}
@@ -21,13 +22,3 @@ export const Toaster = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-});

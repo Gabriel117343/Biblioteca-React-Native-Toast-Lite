@@ -1,16 +1,19 @@
 "use strict";
 
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import Animated, { FadeInUp, FadeOutLeft, useSharedValue, useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, PanResponder } from 'react-native';
+import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
+import { SlideInLeft, SlideOutRight, BounceIn, BounceOut } from 'react-native-reanimated'; // esta es una importación adicional
 import ErrorSvg from "../ui/ErrorSvg.js";
 import SuccessSvg from "../ui/SuccessSvg.js";
 import InfoSvg from "../ui/InfoSvg.js";
 import WarningSvg from "../ui/WarningSvg.js";
 import { toastStyles, positionStyles } from "./commonStyles.js";
 import { TOAST_CONFIG } from "./toastConfig.js";
+import { toast } from "../../store/storeToast.js";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 export const Toast = ({
+  id,
   type,
   title,
   message,
@@ -21,9 +24,15 @@ export const Toast = ({
   // 3000 ms por defecto
   progress = true,
   border = true,
-  styles // objeto de estilos personalizados
+  styles,
+  // objeto de estilos personalizados
+  animationType = 'fade',
+  animationDuration = 500 // Duración de la animación en ms
 }) => {
   const progressValue = useSharedValue(0);
+  const [defaultAnimation, setDefaultAnimation] = useState(animationType);
+  const [animationExitLeft, setAnimationExitLeft] = useState(false);
+  const [progressAnimation, setProgressAnimation] = useState(false);
   useEffect(() => {
     // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
     progressValue.value = 0;
@@ -33,20 +42,82 @@ export const Toast = ({
     });
   }, [duration, progressValue, progress, type]);
   const animatedStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(progressValue.value, [0, 50, 100], [0.6, 0.6, 1]);
     return {
-      width: `${progressValue.value}%`
+      width: `${progressValue.value}%`,
+      opacity: opacity
     };
   });
+
+  // Definir el gesto de deslizar para cerrar el toast
+  const panResponder = useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderMove: (evt, gestureState) => {
+      // Detectar deslizamiento hacia la derecha o izquierda
+      setDefaultAnimation('fade');
+      setProgressAnimation(true);
+      // solo se ejecutra si se desliza más de 50px o menos de -50px
+      if (gestureState.dx > 50) {
+        setTimeout(() => toast.dismiss(id), 100);
+      } else if (gestureState.dx < -50) {
+        setAnimationExitLeft(true);
+        setTimeout(() => toast.dismiss(id), 100);
+      } else {
+        return;
+      }
+    },
+    onPanResponderRelease: () => {
+      // Lógica adicional al soltar el gesto
+    }
+  })).current;
+  const handleAnimation = type => {
+    switch (defaultAnimation) {
+      case 'slide':
+        if (type === 'entering') return SlideInLeft.duration(animationDuration);
+        return SlideOutRight.duration(animationDuration);
+      case 'bounce':
+        if (type === 'entering') return BounceIn.duration(animationDuration);
+        return BounceOut.duration(animationDuration);
+      default:
+        if (type === 'entering') {
+          return FadeInUp.duration(animationDuration);
+        } else if (progressAnimation) {
+          if (!animationExitLeft) {
+            return FadeOutRight.duration(animationDuration);
+          } else return FadeOutLeft.duration(animationDuration);
+        } else return FadeOutLeft.duration(animationDuration);
+    }
+  };
   return /*#__PURE__*/_jsxs(Animated.View, {
-    entering: FadeInUp,
-    exiting: FadeOutLeft,
+    entering: handleAnimation('entering'),
+    exiting: handleAnimation('exiting'),
     style: [toastStyles.container, positionStyles[position ?? 'top'], {
       borderWidth: border ? 1 : 0,
-      borderColor: styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor
+      width: styles?.width ?? '90%',
+      minHeight: styles?.height ?? 60,
+      borderColor: styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor,
+      borderRadius: styles?.borderRadius ?? 15,
+      // Aplica top, bottom, left, right solo si están definidos para que no ignore positionStyles por defecto
+      ...(styles?.top !== undefined && {
+        top: styles.top
+      }),
+      ...(styles?.bottom !== undefined && {
+        bottom: styles.bottom
+      }),
+      ...(styles?.left !== undefined && {
+        left: styles.left
+      }),
+      ...(styles?.right !== undefined && {
+        right: styles.right
+      })
     }],
+    ...panResponder.panHandlers,
     children: [/*#__PURE__*/_jsx(View, {
       style: [StyleSheet.absoluteFillObject, toastStyles.fondoContainer, {
-        backgroundColor: styles?.backgroundColor ?? TOAST_CONFIG[type][toastStyle].backgroundColor
+        backgroundColor: styles?.backgroundColor ?? TOAST_CONFIG[type][toastStyle].backgroundColor,
+        borderLeftColor: toastStyle === 'secondary' ? TOAST_CONFIG[type][toastStyle].borderColor : 'transparent',
+        borderLeftWidth: toastStyle === 'secondary' ? 5 : 0
       }]
     }), /*#__PURE__*/_jsxs(View, {
       style: toastStyles.contentContainer,

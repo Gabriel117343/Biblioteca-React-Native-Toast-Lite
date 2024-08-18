@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { ToastProps, ToastType } from '../../types/toastTypes';
 
 // ESTE ES EL ESTADO PRINCIPAL DE LA APLICACIÓN PARA LOS TOASTS QUE SE MUESTRAN EN LA PANTALLA
-
 interface ToastState {
   toasts: (ToastProps & { id: number; date: Date })[]; // indicamos que cada toast tendrá un id y una fecha además de las propiedades de ToastProps
   addToast: (
@@ -49,6 +48,17 @@ export const useToastStore = create<ToastState>((set) => ({
             // estos valores se sobreescriben si se pasan en props y se mantienen si no
             position: props?.position ?? existingToast.props?.position,
             toastStyle: props?.toastStyle ?? existingToast.props?.toastStyle,
+            styles: {
+              ...existingToast.props?.styles,
+              top: props?.styles?.top ?? existingToast.props?.styles?.top,
+              bottom:
+                props?.styles?.bottom ?? existingToast.props?.styles?.bottom,
+              left: props?.styles?.left ?? existingToast.props?.styles?.left,
+              right: props?.styles?.right ?? existingToast.props?.styles?.right,
+              width: props?.styles?.width ?? existingToast.props?.styles?.width,
+              height:
+                props?.styles?.height ?? existingToast.props?.styles?.height,
+            },
           },
           date,
         };
@@ -78,7 +88,6 @@ export const useToastStore = create<ToastState>((set) => ({
       toasts: state.toasts.filter((toast) => toast?.props?.id !== id),
     })),
 }));
-
 // De esta forma sera posible acceder a las funciones de toast
 // Ej: toast.error('Error al cargar los datos', { title: 'Error' });
 export const toast = {

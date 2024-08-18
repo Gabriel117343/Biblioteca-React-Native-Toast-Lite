@@ -25,7 +25,7 @@ export const TOAST_CONFIG = {
             textColor: '#F0F0F0',
             backgroundColor: '#B22222',
             borderColor: '#A9A9A9',
-            iconColor: '#8B0000',
+            iconColor: 'white',
             progressColor: '#F0F0F0',
         },
         dark: {
@@ -63,7 +63,7 @@ export const TOAST_CONFIG = {
             textColor: '#F0F0F0',
             backgroundColor: '#388E3C',
             borderColor: '#A9A9A9',
-            iconColor: '#4CAF50',
+            iconColor: 'white',
             progressColor: '#FFFFFF',
         },
         dark: {
@@ -101,7 +101,7 @@ export const TOAST_CONFIG = {
             textColor: '#F0F0F0',
             backgroundColor: '#0056b3',
             borderColor: '#A9A9A9',
-            iconColor: '#007BFF',
+            iconColor: 'white',
             progressColor: '#FFFFFF',
         },
         dark: {
@@ -139,7 +139,7 @@ export const TOAST_CONFIG = {
             textColor: '#F0F0F0',
             backgroundColor: '#FF8C00',
             borderColor: '#A9A9A9',
-            iconColor: '#FFA900',
+            iconColor: 'white',
             progressColor: '#FFFFFF',
         },
         dark: {
@@ -177,7 +177,7 @@ export const TOAST_CONFIG = {
             textColor: '#F0F0F0',
             backgroundColor: '#333333',
             borderColor: '#A9A9A9',
-            iconColor: '#0d6efd',
+            iconColor: 'white',
             progressColor: '#FFFFFF',
         },
         dark: {

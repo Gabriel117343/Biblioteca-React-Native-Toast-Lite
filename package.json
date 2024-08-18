@@ -1,9 +1,10 @@
 {
   "name": "react-native-toast-lite",
-  "version": "1.8.3",
+  "version": "1.8.5",
   "description": "Este modulo se trata de mostrar Toast en React Native",
   "main": "./dist\\module\\index.js",
-  "types": "dist/module/react-native-toast-lite.d.ts","scripts": {
+  "types": "dist/module/react-native-toast-lite.d.ts",
+  "scripts": {
     "clean": "if exist dist (rimraf dist) && if exist dist\\module (rimraf dist\\module\\**\\*.js.map)",
     "build": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts dist\\module\\ && copy types\\toastTypes.d.ts dist\\module\\",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -71,9 +72,14 @@
     "source": "src",
     "output": "dist/",
     "targets": [
-    ["module", { "esm": true, "sourceMaps": false }]
+      [
+        "module",
+        {
+          "esm": true,
+          "sourceMaps": false
+        }
+      ]
     ]
-
   },
   "eslintIgnore": [
     "node_modules/",

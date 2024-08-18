@@ -1,5 +1,13 @@
 # react-native-toast-lite
 
+![npm](https://img.shields.io/npm/v/react-native-toast-lite.svg?style=flat-square)
+![npm](https://img.shields.io/npm/dm/react-native-toast-lite.svg?style=flat-square)
+![License](https://img.shields.io/npm/l/react-native-toast-lite.svg?style=flat-square)
+![Build Status](https://img.shields.io/github/actions/workflow/status/usuario/repo/main.yml?style=flat-square)
+![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20Phone-blue.svg?style=flat-square)
+![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
+
+**Versión:** `v1.8.5`
 ## Descripción
 
 **react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones React Native. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación. La biblioteca incluye soporte para varios tipos de mensajes, como errores y éxitos, con una personalización sencilla para adaptarse al diseño de tu aplicación.
@@ -121,16 +129,10 @@ npm install react-native-toast-lite@latest
     );
   };
   
-<<<<<<< HEAD
-  export default ExampleComponent;
-  ```
-=======
->>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
-  
   export default ExampleComponent;
   ```
 
-  ### Tipos de Toast
+### Tipos de Toast
 
 | **Tipo**   | **Descripción**                         |
 |------------|-----------------------------------------|
@@ -142,44 +144,42 @@ npm install react-native-toast-lite@latest
 
 ### Propiedades de las props
 
-| **Propiedad**  | **Tipo**                                                                 | **Descripción**                                                                           |
-|----------------|--------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
-| `id`           | `number` (opcional)                                                      | Identificador único opcional para el toast.                                               |
-| `title`        | `string` (opcional)                                                      | Título opcional del toast.                                                                |
-| `duration`     | `number` (opcional)                                                      | Duración en milisegundos que el toast permanecerá visible.                                |
-| `position`     | `'top'-'bottom'-'center'-'top-left'-'top-right'-'bottom-left'-'bottom-right'` (opcional) | Posición del toast en la pantalla.                                                       |
-<<<<<<< HEAD
-| `toastStyle`   | `'primary'-'secondary'-'primaryDark'-'dark'` (opcional)          | Estilo del toast.                                                                         |
-=======
-| `toastStyle`   | `'primary' | 'secondary' | 'primaryDark' | 'dark'` (opcional)`          | Estilo del toast.                                                                         |
->>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
-| `progress`     | `boolean` (opcional)                                                     | Indica si se debe mostrar una barra de progreso.                                          |
-| `icon`         | `string` (opcional)                                                      | Emoji o ícono opcional que se muestra junto al mensaje del toast.                         |
-| `border`       | `boolean` (opcional)                                                     | Determina si el toast debe tener un borde visible.                                        |
+| **Propiedad**        | **Tipo**                                                      | **Descripción**                                                                                          |
+|----------------------|---------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| `id`                 | `number` _(opcional)_                                         | Identificador único para el toast.                                                                        |
+| `title`              | `string` _(opcional)_                                         | Título del toast.                                                                                         |
+| `duration`           | `number` _(opcional)_                                         | Duración del toast en milisegundos.                                                                       |
+| `position`           | `'top' - 'bottom' - 'center' - 'top-left' - 'top-right' - 'bottom-left' - 'bottom-right'` _(opcional)_ | Posición en la pantalla donde se mostrará el toast.                                                    |
+| `toastStyle`         | `'primary' - 'secondary' - 'primaryDark' - 'dark'` _(opcional)_ | Estilo del toast.                                                                                         |
+| `animationType`      | `'fade' - 'slide' - 'bounce'` _(opcional)_                    | Tipo de animación del toast.                                                                              |
+| `animationDuration`  | `number` _(opcional)_                                         | Duración de la animación en milisegundos.                                                                 |
+| `progress`           | `boolean` _(opcional)_                                        | Indica si se muestra la barra de progreso.                                                                |
+| `icon`               | `string` _(opcional)_                                         | Emoji o carácter a mostrar como ícono en el toast.                                                        |
+| `border`             | `boolean` _(opcional)_                                        | Indica si se muestra un borde alrededor del toast.                                                        |
 
 ### propiedad de los estilos personalizados
 
-| **Propiedad**    | **Tipo**                                            | **Descripción**                                            |
-|------------------|-----------------------------------------------------|------------------------------------------------------------|
-| `titleColor`     | `string` (opcional)                                | Color del título del toast.                               |
-| `textColor`      | `string` (opcional)                                | Color del texto del toast.                                |
-| `titleSize`      | `number` (opcional)                                | Tamaño de la fuente del título del toast.                 |
-| `textSize`       | `number` (opcional)                                | Tamaño de la fuente del texto del toast.                  |
-| `backgroundColor`| `string` (opcional)                                | Color de fondo del toast.                                |
-| `borderColor`    | `string` (opcional)                                | Color del borde del toast.                               |
-| `iconSize`       | `number` (opcional)                                | Tamaño del ícono o emoji en el toast.                    |
-<<<<<<< HEAD
-| `iconStyle`      | `'solid'-'outline'-'default'` (opcional)      | Estilo del ícono (sólido, contorno o predeterminado).     |
-=======
-| `iconStyle`      | `'solid'-'outline'-'default'` (opcional)`      | Estilo del ícono (sólido, contorno o predeterminado).     |
->>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
-| `loadingColor`   | `string` (opcional)                                | Color del indicador de carga en el toast.                |
-| `progressColor`  | `string` (opcional)                                | Color de la barra de progreso en el toast.               |
+### Propiedades de los Estilos Personalizados
 
-> Resultado:
-<<<<<<< HEAD
+| **Propiedad**       | **Tipo**                                                         | **Descripción**                                                                             |
+|---------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
+| `titleColor`        | `string` _(opcional)_                                            | Color del título del toast.                                                                 |
+| `textColor`         | `string` _(opcional)_                                            | Color del texto del toast.                                                                  |
+| `titleSize`         | `number` _(opcional)_                                            | Tamaño de la fuente del título del toast.                                                   |
+| `textSize`          | `number` _(opcional)_                                            | Tamaño de la fuente del texto del toast.                                                    |
+| `backgroundColor`   | `string` _(opcional)_                                            | Color de fondo del toast.                                                                   |
+| `borderRadius`      | `number` _(opcional)_                                            | Radio de las esquinas del toast.                                                            |
+| `borderColor`       | `string` _(opcional)_                                            | Color del borde del toast.                                                                  |
+| `iconSize`          | `number` _(opcional)_                                            | Tamaño del ícono dentro del toast.                                                          |
+| `iconStyle`         | `'solid' - 'outline' - 'default'` _(opcional)_                   | Estilo del ícono en el toast.                                                               |
+| `loadingColor`      | `string` _(opcional)_                                            | Color del indicador de carga si se muestra un toast de tipo loading.                        |
+| `progressColor`     | `string` _(opcional)_                                            | Color de la barra de progreso del toast.                                                    |
+| `width`             | `number` _(opcional)_                                            | Ancho personalizado del toast.                                                              |
+| `height`            | `number` _(opcional)_                                            | Altura personalizada del toast.                                                             |
+| `top`               | `number` _(opcional)_                                            | Posición superior personalizada del toast en la pantalla.                                   |
+| `bottom`            | `number` _(opcional)_                                            | Posición inferior personalizada del toast en la pantalla.                                   |
+| `left`              | `number` _(opcional)_                                            | Posición izquierda personalizada del toast en la pantalla.                                  |
+| `right`             | `number` _(opcional)_                                            | Posición derecha personalizada del toast en la pantalla.                                    |
 
-<img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
-=======
- <img src="https://github.com/user-attachments/assets/5459adc1-2470-40b4-beb4-1758c5901ddb" alt="NASA Image 1" width="25%" />
->>>>>>> 61364bd5f28b6e533e53727b1a9f6e3eb78ccdb4
+> Resultado
+ <img src="https://github.com/user-attachments/assets/e0d00a53-5e7d-4a41-872d-509413e347f7" alt="NASA Image 1" width="25%" />
