@@ -23,10 +23,6 @@ export const toastStyles = StyleSheet.create({
     zIndex: 1000,
     overflow: 'hidden',
   },
-  fondoContainer: {
-    backgroundColor: '#FF5347',
-    opacity: 0.9,
-  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',

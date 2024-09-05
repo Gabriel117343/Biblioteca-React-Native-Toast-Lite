@@ -13,7 +13,8 @@ export interface ToastProps {
     | 'bottom-right';
   toastStyle?: 'primary' | 'secondary' | 'primaryDark' | 'dark';
   animationType?: 'fade' | 'slide' | 'bounce';
-  animationDuration?: number;
+  animationInDuration?: number;
+  animationOutDuration?: number;
   duration?: number;
   progress?: boolean;
   icon?: string; // emoji
@@ -30,6 +31,7 @@ export interface ToastProps {
     iconSize?: number;
     iconStyle?: 'solid' | 'outline' | 'default';
     progressColor?: string;
+    opacity?: number;
     width?: number;
     height?: number;
     top?: number;

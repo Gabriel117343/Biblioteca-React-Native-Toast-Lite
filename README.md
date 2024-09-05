@@ -7,7 +7,7 @@
 ![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20Phone-blue.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
 
-**Versión:** `v1.8.6`
+**Versión:** `v1.8.9`
 ## Descripción
 
 **react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones React Native. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación. La biblioteca incluye soporte para varios tipos de mensajes, como errores y éxitos, con una personalización sencilla para adaptarse al diseño de tu aplicación.
@@ -47,7 +47,6 @@ npm install react-native-toast-lite
          <Toaster /> {/* Añade el Toaster en la parte superior de tu aplicación */}
          <Text>Mi aplicación</Text>
          {/* Otros componentes */}
-         <Toaster /> {/* Añade el Toaster en la parte superior de tu aplicación */}
        </View>
 
    );
@@ -101,7 +100,7 @@ npm install react-native-toast-lite
       });
     };
     // Ejemplo de uso real
-    const enviarDatos = () => {
+    const enviarDatos = async ({ formData }) => {
       toast.loading("Cargando...", {
         id: "cargaDatos",
         duration: 2000,
@@ -110,14 +109,16 @@ npm install react-native-toast-lite
         icon: '⏳', // Icono personalizado (emoji)
       });
       try {
-        const { success, message } = axios.post('https//....')
+        const { success, message } = await axios.post(`https//..../${formData}`)
         if (success) { 
-          toast.info(message, { id: 'cargaDatos', title: 'Exito!' }); // heredara position y toastStyle
+          toast.info(message, { title: 'Exito!', id: 'cargaDatos' }); // heredara position y toastStyle
+          
         } else {
           // toast ...
         }
       } catch(error) {
           // toast ...
+          toast.error(text ?? 'Error inesperado', { title: 'Error', id: 'cargaDatos', duration: 2000 })
       }
     }
     
@@ -152,15 +153,14 @@ npm install react-native-toast-lite
 | `position`           | `'top' - 'bottom' - 'center' - 'top-left' - 'top-right' - 'bottom-left' - 'bottom-right'` _(opcional)_ | Posición en la pantalla donde se mostrará el toast.                                                    |
 | `toastStyle`         | `'primary' - 'secondary' - 'primaryDark' - 'dark'` _(opcional)_ | Estilo del toast.                                                                                         |
 | `animationType`      | `'fade' - 'slide' - 'bounce'` _(opcional)_                    | Tipo de animación del toast.                                                                              |
-| `animationDuration`  | `number` _(opcional)_                                         | Duración de la animación en milisegundos.                                                                 |
+| `animationInDuration`  | `number` _(optional)_                                       | Duración de la animación de entrada en milisegundos.                                                               |
+| `animationOutDuration` | `number` _(optional)_                                       | Duración de la animación de salida en milisegundos.                                                               |
 | `progress`           | `boolean` _(opcional)_                                        | Indica si se muestra la barra de progreso.                                                                |
 | `icon`               | `string` _(opcional)_                                         | Emoji o carácter a mostrar como ícono en el toast.                                                        |
 | `border`             | `boolean` _(opcional)_                                        | Indica si se muestra un borde alrededor del toast.                                                        |
 | `inheritStyles`      | `boolean` _(opcional)_                                        | Indica si se heredan los styles del toast con el mismo id  
 
 ### propiedad de los estilos personalizados
-
-### Propiedades de los Estilos Personalizados
 
 | **Propiedad**       | **Tipo**                                                         | **Descripción**                                                                             |
 |---------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
@@ -176,11 +176,11 @@ npm install react-native-toast-lite
 | `loadingColor`      | `string` _(opcional)_                                            | Color del indicador de carga si se muestra un toast de tipo loading.                        |
 | `progressColor`     | `string` _(opcional)_                                            | Color de la barra de progreso del toast.                                                    |
 | `width`             | `number` _(opcional)_                                            | Ancho personalizado del toast.                                                              |
+| `opacity`      | `number` _(optional)_                                        | Indica la opacidad del fondo(0.9 por defecto).                                       |
 | `height`            | `number` _(opcional)_                                            | Altura personalizada del toast.                                                             |
 | `top`               | `number` _(opcional)_                                            | Posición superior personalizada del toast en la pantalla.                                   |
 | `bottom`            | `number` _(opcional)_                                            | Posición inferior personalizada del toast en la pantalla.                                   |
 | `left`              | `number` _(opcional)_                                            | Posición izquierda personalizada del toast en la pantalla.                                  |
 | `right`             | `number` _(opcional)_                                            | Posición derecha personalizada del toast en la pantalla.                                    |
 
-> Resultado
  <img src="https://github.com/user-attachments/assets/e0d00a53-5e7d-4a41-872d-509413e347f7" alt="NASA Image 1" width="25%" />

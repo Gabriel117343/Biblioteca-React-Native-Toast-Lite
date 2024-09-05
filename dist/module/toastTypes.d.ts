@@ -18,6 +18,8 @@ export interface ToastProps {
     toastStyle?: 'primary' | 'secondary' | 'primaryDark' | 'dark';
     animationType?: 'fade' | 'slide' | 'bounce';
     animationDuration?: number;
+    animationInDuration?: number;
+    animationOutDuration?: number;
     progress?: boolean;
     icon?: string; // emoji
     border?: boolean;
@@ -34,6 +36,7 @@ export interface ToastProps {
       iconStyle?: 'solid' | 'outline' | 'default';
       loadingColor?: string;
       progressColor?: string;
+      opacity?: number;
       width?: number;
       height?: number;
       top?: number;

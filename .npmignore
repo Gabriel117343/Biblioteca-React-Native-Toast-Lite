@@ -49,7 +49,6 @@ temp/
 
 # Excluir el código fuente TypeScript
 src/
-
 .git
 .map
 *.map

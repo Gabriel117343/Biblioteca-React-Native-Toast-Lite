@@ -2,7 +2,7 @@ import { create } from 'zustand';
 export const useToastStore = create((set) => ({
     toasts: [],
     addToast: (type, message, props) => {
-        const id = props?.id ?? Math.floor(Math.random() * 1000);
+        const id = props?.id ?? Math.floor(Math.random() * 100);
         const date = new Date();
         // la duración por defecto prioriza la duración pasada en props
         const defaultDuration = !props?.duration

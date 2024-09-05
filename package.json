@@ -1,7 +1,7 @@
 {
   "name": "react-native-toast-lite",
-  "version": "1.8.6",
-  "description": "Este modulo se trata de mostrar Toast en React Native",
+  "version": "1.8.9",
+  "description": "🍞 Este modulo se trata de mostrar Toast en React Native",
   "main": "./dist\\module\\index.js",
   "types": "dist/module/react-native-toast-lite.d.ts",
   "scripts": {
@@ -21,7 +21,10 @@
   "keywords": [
     "react-native",
     "toast",
-    "react-native-toast"
+    "react-native-toast",
+    "notification",
+    "alert",
+    "message"
   ],
   "author": "Gabriel-Soliz",
   "license": "MIT",
@@ -57,16 +60,14 @@
     ".": "./dist/module/index.js"
   },
   "files": [
-    "src",
     "dist",
-    "types",
     "README.md",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
     "!dist/module/**/*.js.map",
-    "types/react-native-toast-lite.d.ts",
-    "types/toastTypes.d.ts"
+    "!dist/components/**",
+    "!dist/store/**"
   ],
   "react-native-builder-bob": {
     "source": "src",

@@ -1,17 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, PanResponder, } from 'react-native';
+import { View, Text, StyleSheet, PanResponder } from 'react-native';
 import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate, } from 'react-native-reanimated';
 import { SlideInLeft, SlideOutRight, BounceIn, BounceOut, } from 'react-native-reanimated'; // esta es una importación adicional
-import ErrorSvg from '../ui/ErrorSvg';
-import SuccessSvg from '../ui/SuccessSvg';
-import InfoSvg from '../ui/InfoSvg';
-import WarningSvg from '../ui/WarningSvg';
 import { toastStyles, positionStyles } from './commonStyles';
 import { TOAST_CONFIG } from './toastConfig';
 import { toast } from '../../store/storeToast';
+import { RenderIcon } from './RenderIcon';
 export const Toast = ({ id, type, title, message, position, toastStyle = 'primary', icon, duration, // 3000 ms por defecto
 progress = true, border = true, styles, // objeto de estilos personalizados
-animationType = 'fade', animationDuration = 500, // Duración de la animación en ms
+animationType = 'fade', animationInDuration = 500, // Duration for the animation
+animationOutDuration = 500, // Duration for the animation
  }) => {
     const progressValue = useSharedValue(0);
     const [defaultAnimation, setDefaultAnimation] = useState(animationType);
@@ -50,35 +48,36 @@ animationType = 'fade', animationDuration = 500, // Duración de la animación e
                 return;
             }
         },
-        onPanResponderRelease: () => {
-            // Lógica adicional al soltar el gesto
-        },
+        // onPanResponderRelease: () => {
+        //   // Lógica adicional al soltar el gesto
+        // },
     })).current;
     const handleAnimation = (type) => {
         switch (defaultAnimation) {
             case 'slide':
                 if (type === 'entering')
-                    return SlideInLeft.duration(animationDuration);
-                return SlideOutRight.duration(animationDuration);
+                    return SlideInLeft.duration(animationInDuration);
+                return SlideOutRight.duration(animationOutDuration);
             case 'bounce':
                 if (type === 'entering')
-                    return BounceIn.duration(animationDuration);
-                return BounceOut.duration(animationDuration);
+                    return BounceIn.duration(animationInDuration);
+                return BounceOut.duration(animationOutDuration);
             default:
                 if (type === 'entering') {
-                    return FadeInUp.duration(animationDuration);
+                    return FadeInUp.duration(animationInDuration);
                 }
                 else if (progressAnimation) {
                     if (!animationExitLeft) {
-                        return FadeOutRight.duration(animationDuration);
+                        return FadeOutRight.duration(animationOutDuration);
                     }
                     else
-                        return FadeOutLeft.duration(animationDuration);
+                        return FadeOutLeft.duration(animationOutDuration);
                 }
                 else
-                    return FadeOutLeft.duration(animationDuration);
+                    return FadeOutLeft.duration(animationOutDuration);
         }
     };
+    // Código Refactorizado
     return (React.createElement(Animated.View, { entering: handleAnimation('entering'), exiting: handleAnimation('exiting'), style: [
             toastStyles.container,
             positionStyles[position ?? 'top'],
@@ -97,7 +96,6 @@ animationType = 'fade', animationDuration = 500, // Duración de la animación e
         ], ...panResponder.panHandlers },
         React.createElement(View, { style: [
                 StyleSheet.absoluteFillObject,
-                toastStyles.fondoContainer,
                 {
                     backgroundColor: styles?.backgroundColor ??
                         TOAST_CONFIG[type][toastStyle].backgroundColor,
@@ -105,6 +103,7 @@ animationType = 'fade', animationDuration = 500, // Duración de la animación e
                         ? TOAST_CONFIG[type][toastStyle].borderColor
                         : 'transparent',
                     borderLeftWidth: toastStyle === 'secondary' ? 5 : 0,
+                    opacity: styles?.opacity ?? 0.9,
                 },
             ] }),
         React.createElement(View, { style: toastStyles.contentContainer },
@@ -136,44 +135,3 @@ animationType = 'fade', animationDuration = 500, // Duración de la animación e
                         },
                     ] }))))));
 };
-function RenderIcon({ type, toastStyle, iconColor, icon, iconSize, iconStyle, }) {
-    const iconProgress = useSharedValue(0);
-    useEffect(() => {
-        // Reiniciar el iconProgress cuando cambie el type y animarlo nuevamente
-        iconProgress.value = 0;
-        iconProgress.value = withTiming(1, { duration: 500 });
-    }, [iconProgress, type]);
-    const animatedIconStyle = useAnimatedStyle(() => {
-        return {
-            opacity: interpolate(iconProgress.value, [0, 1], [0, 1]),
-            transform: [
-                {
-                    scale: interpolate(iconProgress.value, [0, 1], [0.5, 1]),
-                },
-            ],
-        };
-    });
-    const renderIcon = () => {
-        if (icon)
-            return (React.createElement(Text, { style: [
-                    {
-                        fontSize: iconSize ?? 25,
-                    },
-                ] }, icon));
-        switch (type) {
-            case 'error':
-                return (React.createElement(ErrorSvg, { toastStyle: toastStyle, iconColor: iconColor, iconSize: iconSize, iconStyle: iconStyle }));
-            case 'success':
-                return (React.createElement(SuccessSvg, { toastStyle: toastStyle, iconColor: iconColor, iconSize: iconSize, iconStyle: iconStyle }));
-            case 'info':
-                return (React.createElement(InfoSvg, { toastStyle: toastStyle, iconColor: iconColor, iconSize: iconSize, iconStyle: iconStyle }));
-            case 'warning':
-                return (React.createElement(WarningSvg, { toastStyle: toastStyle, iconColor: iconColor, iconSize: iconSize, iconStyle: iconStyle }));
-            case 'loading':
-                return React.createElement(ActivityIndicator, { size: iconSize ?? 30, color: iconColor });
-            default:
-                return null;
-        }
-    };
-    return (React.createElement(Animated.View, { style: animatedIconStyle }, renderIcon()));
-}
