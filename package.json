@@ -1,9 +1,9 @@
 {
   "name": "react-native-toast-lite",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "🍞 Este modulo se trata de mostrar Toast en React Native",
   "main": "./dist\\module\\index.js",
-  "types": "react-native-toast-lite.d.ts",
+  "types": "./dist\\module\\react-native-toast-lite.d.ts",
   "scripts": {
     "clean": "if exist dist (rimraf dist) && if exist dist\\module (rimraf dist\\module\\**\\*.js.map)",
     "build": "npm run clean && bob build && tsc && copy types\\react-native-toast-lite.d.ts dist\\module\\ && copy types\\toastTypes.d.ts dist\\module\\",
@@ -57,7 +57,11 @@
   "source": "./src\\index.js",
   "module": "./dist\\module\\index.js",
   "exports": {
-    ".": "./dist/module/index.js"
+    ".": {
+      "import": "./dist/module/index.js",
+      "require": "./dist/module/index.js",
+      "types": "./dist/module/react-native-toast-lite.d.ts"
+    }
   },
   "files": [
     "dist",
@@ -67,8 +71,7 @@
     "!**/__mocks__",
     "!dist/module/**/*.js.map",
     "!dist/components/**",
-    "!dist/store/**",
-    "react-native-toast-lite.d.ts"
+    "!dist/store/**"
   ],
   "react-native-builder-bob": {
     "source": "src",
