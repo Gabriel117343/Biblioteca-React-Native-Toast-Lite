@@ -7,7 +7,7 @@
 ![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20Phone-blue.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
 
-**Versión:** `v1.8.9`
+**Versión:** `v1.9.0`
 ## Descripción
 
 **react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones React Native. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación. La biblioteca incluye soporte para varios tipos de mensajes, como errores y éxitos, con una personalización sencilla para adaptarse al diseño de tu aplicación.
@@ -20,6 +20,13 @@
 - **Fácil Integración**: Instala y usa en tu proyecto con facilidad.
 - **Contexto Global con Zustand**: Utiliza Zustand para manejar el estado global de los toasts.
 - **Animaciones con react-native-reanimated**: Integra animaciones suaves para una mejor experiencia de usuario.
+
+## Compatibilidad
+
+✅ **React 18+**: Compatible con React 18.2.0 y versiones superiores, incluyendo React 19.
+✅ **React Native**: Compatible con React Native 0.74.3 y versiones superiores.
+✅ **Expo**: Compatible con Expo SDK 53 y versiones superiores.
+✅ **React Native Reanimated**: Compatible con Reanimated 3.10.1 y versiones superiores.
 
 ## Instalación
 
@@ -100,6 +107,8 @@ npm install react-native-toast-lite
       });
     };
     // Ejemplo de uso real
+    import { sendData } from './sendDatAxiosApi'
+
     const enviarDatos = async ({ formData }) => {
       toast.loading("Cargando...", {
         id: "cargaDatos",
@@ -109,16 +118,16 @@ npm install react-native-toast-lite
         icon: '⏳', // Icono personalizado (emoji)
       });
       try {
-        const { success, message } = await axios.post(`https//..../${formData}`)
+        const { success, message } = await sendData(formData)
         if (success) { 
-          toast.info(message, { title: 'Exito!', id: 'cargaDatos' }); // heredara position y toastStyle
+          toast.info(message ?? 'Se ha realizado correctamente..', { title: 'Exito!', id: 'cargaDatos' }); // heredara position y toastStyle
           
         } else {
           // toast ...
+          toast.error(message ?? 'Error inesperado', { title: 'Error', id: 'cargaDatos', duration: 2000 })
         }
       } catch(error) {
           // toast ...
-          toast.error(text ?? 'Error inesperado', { title: 'Error', id: 'cargaDatos', duration: 2000 })
       }
     }
     

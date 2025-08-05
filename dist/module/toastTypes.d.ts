@@ -17,7 +17,6 @@ export interface ToastProps {
       | 'bottom-right';
     toastStyle?: 'primary' | 'secondary' | 'primaryDark' | 'dark';
     animationType?: 'fade' | 'slide' | 'bounce';
-    animationDuration?: number;
     animationInDuration?: number;
     animationOutDuration?: number;
     progress?: boolean;
