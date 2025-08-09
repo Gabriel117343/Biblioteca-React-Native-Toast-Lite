@@ -7,5 +7,6 @@ export const toast: {
   success: (message: string, props?: ToastProps['props']) => void;
   info: (message: string, props?: ToastProps['props']) => void;
   warning: (message: string, props?: ToastProps['props']) => void;
+  dismiss: (id: string) => void;
   loading: (message: string, props?: ToastProps['props']) => void;
 };

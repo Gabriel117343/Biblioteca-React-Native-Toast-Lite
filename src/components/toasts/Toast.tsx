@@ -14,7 +14,7 @@ import {
   SlideOutRight,
   BounceIn,
   BounceOut,
-} from 'react-native-reanimated'; // esta es una importación adicional
+} from 'react-native-reanimated';
 
 import { toastStyles, positionStyles } from './commonStyles';
 import { ToastProps } from './types';
@@ -30,6 +30,7 @@ export const Toast: React.FC<ToastProps> = ({
   position,
   toastStyle = 'primary',
   icon,
+  iconUrl,
   duration, // 3000 ms por defecto
   progress = true,
   border = true,
@@ -153,6 +154,7 @@ export const Toast: React.FC<ToastProps> = ({
             styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor
           }
           icon={icon}
+          iconUrl={iconUrl}
           iconSize={styles?.iconSize}
           iconStyle={styles?.iconStyle}
         />

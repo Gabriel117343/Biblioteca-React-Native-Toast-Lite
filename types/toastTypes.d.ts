@@ -1,10 +1,12 @@
 export type ToastType = 'error' | 'success' | 'info' | 'warning' | 'loading';
 
+type validURL = `http://${string}` | `https://${string}`;
+
 export interface ToastProps {
   type: ToastType;
   message: string;
   props?: {
-    id?: number;
+    id?: string;
     title?: string;
     duration?: number;
     position?:
@@ -21,6 +23,7 @@ export interface ToastProps {
     animationOutDuration?: number;
     progress?: boolean;
     icon?: string; // emoji
+    iconUrl?: validURL;
     border?: boolean;
     inheritStyles?: boolean;
     styles?: {

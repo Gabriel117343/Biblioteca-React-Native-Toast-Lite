@@ -1,5 +1,6 @@
+type validURL = `http://${string}` | `https://${string}`;
 export interface ToastProps {
-  id: number;
+  id: string;
   type: 'error' | 'success' | 'info' | 'warning' | 'loading';
   title?: string;
   message?: string;
@@ -18,6 +19,7 @@ export interface ToastProps {
   duration?: number;
   progress?: boolean;
   icon?: string; // emoji
+  iconUrl?: validURL;
   border?: boolean;
   styles?: {
     titleColor?: string;

@@ -7,14 +7,14 @@
 ![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20Phone-blue.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
 
-**Versión:** `v1.9.2`
+**Versión:** `v1.9.3`
 ## Descripción
 
 **react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones React Native. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación. La biblioteca incluye soporte para varios tipos de mensajes, como errores y éxitos, con una personalización sencilla para adaptarse al diseño de tu aplicación.
 
 ## Características
 
-- **Notificaciones de Toast**: Muestra mensajes en la pantalla de manera no intrusiva.
+- **Notificaciones de Toast**: 🍞Muestra mensajes en la pantalla de manera no intrusiva.
 - **Tipos de Toast**: Soporte para varios tipos de notificaciones, como errores y éxitos.
 - **Configuración Flexible**: Personaliza los colores, tamaños y estilos de los toasts.
 - **Fácil Integración**: Instala y usa en tu proyecto con facilidad.
@@ -142,6 +142,19 @@ npm install react-native-toast-lite
   export default ExampleComponent;
   ```
 
+## Iconos personalizados (emoji o imagen)
+
+Puedes personalizar el icono del toast usando:
+- `icon`: un emoji.
+- `iconUrl`: una imagen remota (tiene prioridad sobre `icon` y los SVG por defecto).
+
+Ejemplos:
+```tsx
+toast.success('Guardado', { iconUrl: 'https://example.com/success.png' });
+// o
+toast.success('Ok', { icon: '✅' });
+```
+
 ### Tipos de Toast
 
 | **Tipo**   | **Descripción**                         |
@@ -156,18 +169,19 @@ npm install react-native-toast-lite
 
 | **Propiedad**        | **Tipo**                                                      | **Descripción**                                                                                          |
 |----------------------|---------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| `id`                 | `number` _(opcional)_                                         | Identificador único para el toast.                                                                        |
-| `title`              | `string` _(opcional)_                                         | Título del toast.                                                                                         |
-| `duration`           | `number` _(opcional)_                                         | Duración del toast en milisegundos.                                                                       |
-| `position`           | `'top' - 'bottom' - 'center' - 'top-left' - 'top-right' - 'bottom-left' - 'bottom-right'` _(opcional)_ | Posición en la pantalla donde se mostrará el toast.                                                    |
-| `toastStyle`         | `'primary' - 'secondary' - 'primaryDark' - 'dark'` _(opcional)_ | Estilo del toast.                                                                                         |
-| `animationType`      | `'fade' - 'slide' - 'bounce'` _(opcional)_                    | Tipo de animación del toast.                                                                              |
-| `animationInDuration`  | `number` _(optional)_                                       | Duración de la animación de entrada en milisegundos.                                                               |
-| `animationOutDuration` | `number` _(optional)_                                       | Duración de la animación de salida en milisegundos.                                                               |
-| `progress`           | `boolean` _(opcional)_                                        | Indica si se muestra la barra de progreso.                                                                |
-| `icon`               | `string` _(opcional)_                                         | Emoji o carácter a mostrar como ícono en el toast.                                                        |
-| `border`             | `boolean` _(opcional)_                                        | Indica si se muestra un borde alrededor del toast.                                                        |
-| `inheritStyles`      | `boolean` _(opcional)_                                        | Indica si se heredan los styles del toast con el mismo id  
+| `id`                 | `string` _(recomendado)_                                         | Identificador único para el toast.                                                                       |
+| `title`              | `string` _(opcional)_                                         | Título del toast.                                                                                        |
+| `duration`           | `number` _(opcional)_                                         | Duración del toast en milisegundos.                                                                      |
+| `position`           | `'top' - 'bottom' - 'center' - 'top-left' - 'top-right' - 'bottom-left' - 'bottom-right'` _(opcional)_ | Posición en la pantalla donde se mostrará el toast.                               |
+| `toastStyle`         | `'primary' - 'secondary' - 'primaryDark' - 'dark'` _(opcional)_ | Estilo del toast.                                                                                        |
+| `animationType`      | `'fade' - 'slide' - 'bounce'` _(opcional)_                    | Tipo de animación del toast.                                                                             |
+| `animationInDuration`  | `number` _(opcional)_                                       | Duración de la animación de entrada en milisegundos.                                                     |
+| `animationOutDuration` | `number` _(opcional)_                                       | Duración de la animación de salida en milisegundos.                                                      |
+| `progress`           | `boolean` _(opcional)_                                        | Indica si se muestra la barra de progreso.                                                               |
+| `icon`               | `string` _(opcional)_                                         | Emoji/caracter como ícono. Si también pasas `iconUrl`, este será ignorado.                               |
+| `iconUrl`            | `string` _(opcional)_                                         | URL válida de imagen para usar como ícono (tiene prioridad sobre `icon` y los SVG por defecto).          |
+| `border`             | `boolean` _(opcional)_                                        | Indica si se muestra un borde alrededor del toast.                                                       |
+| `inheritStyles`      | `boolean` _(opcional)_                                        | Indica si se heredan los styles del toast con el mismo id.                                               | 
 
 ### propiedad de los estilos personalizados
 

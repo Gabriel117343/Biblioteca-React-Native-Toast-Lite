@@ -3,19 +3,20 @@ import { ToastProps, ToastType } from '../../types/toastTypes';
 
 // ESTE ES EL ESTADO PRINCIPAL DE LA APLICACIÓN PARA LOS TOASTS QUE SE MUESTRAN EN LA PANTALLA
 interface ToastState {
-  toasts: (ToastProps & { id: number; date: Date })[]; // indicamos que cada toast tendrá un id y una fecha además de las propiedades de ToastProps
+  toasts: (ToastProps & { id: string; date: Date })[]; // indicamos que cada toast tendrá un id y una fecha además de las propiedades de ToastProps
   addToast: (
     type: ToastType,
     message: ToastProps['message'],
     props: ToastProps['props']
   ) => void;
-  removeToast: (id: number) => void;
+  removeToast: (id: string) => void;
 }
+const randomId = () => Math.random().toString(36).slice(2, 10);
 
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
   addToast: (type, message, props) => {
-    const id = props?.id ?? Math.floor(Math.random() * 100);
+    const normalizedId = String(props?.id ?? randomId()); // normaliza a string
     const date = new Date();
     // la duración por defecto prioriza la duración pasada en props
     const defaultDuration = !props?.duration
@@ -24,7 +25,7 @@ export const useToastStore = create<ToastState>((set) => ({
         : 3000
       : props.duration;
     let newToast = {
-      id,
+      id: normalizedId,
       type,
       message,
       props,
@@ -34,7 +35,7 @@ export const useToastStore = create<ToastState>((set) => ({
 
     set((state) => {
       const existingToastIndex = state.toasts.findIndex(
-        (toast) => toast.id === id
+        (toast) => toast.id === normalizedId
       );
       if (existingToastIndex !== -1) {
         const existingToast = state.toasts[existingToastIndex];
@@ -96,7 +97,7 @@ export const toast = {
     useToastStore.getState().addToast('info', message, props),
   warning: (message: string, props: ToastProps['props']) =>
     useToastStore.getState().addToast('warning', message, props),
-  dismiss: (id: number) => useToastStore.getState().removeToast(id),
+  dismiss: (id: string) => useToastStore.getState().removeToast(id),
   loading: (message: string, props: ToastProps['props']) =>
     useToastStore.getState().addToast('loading', message, props),
 };

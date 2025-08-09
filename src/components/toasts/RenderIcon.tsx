@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Text } from 'react-native';
+import { Text, Image } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -12,10 +12,14 @@ import SuccessSvg from '../ui/SuccessSvg';
 import InfoSvg from '../ui/InfoSvg';
 import WarningSvg from '../ui/WarningSvg';
 import CustomLoading from './CustomLoading';
+
+type validURL = `http://${string}` | `https://${string}`;
+
 interface RenderIconProps {
   type: 'error' | 'success' | 'info' | 'warning' | 'loading';
   toastStyle: 'primary' | 'secondary' | 'primaryDark' | 'dark'; // este parametro si tiene un valor por defecto
   icon?: string; // emoji
+  iconUrl?: validURL;
   loadingType?: 'pulse' | 'wave';
   iconColor?: string; // opcionales
   iconSize?: number;
@@ -26,6 +30,7 @@ export const RenderIcon: React.FC<RenderIconProps> = ({
   toastStyle,
   iconColor,
   icon,
+  iconUrl,
   iconSize,
   iconStyle,
 }) => {
@@ -49,6 +54,21 @@ export const RenderIcon: React.FC<RenderIconProps> = ({
   });
 
   const renderIcon = () => {
+    // Prioridad 1: iconUrl (imagen remota)
+    if (iconUrl) {
+      return (
+        <Image
+          source={{ uri: iconUrl }}
+          style={{
+            width: iconSize ?? 25,
+            height: iconSize ?? 25,
+            resizeMode: 'contain',
+            borderRadius: (iconSize ?? 25) / 6,
+          }}
+        />
+      );
+    }
+    // Prioridad 2: icon (emoji)
     if (icon)
       return (
         <Text
@@ -61,6 +81,7 @@ export const RenderIcon: React.FC<RenderIconProps> = ({
           {icon}
         </Text>
       );
+    // Prioridad 3: icono predeterminado
     switch (type) {
       case 'error':
         return (
