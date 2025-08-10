@@ -52,7 +52,7 @@ export const Toast: React.FC<ToastProps> = ({
   const [animationExitLeft, setAnimationExitLeft] = useState(false);
   const [progressAnimation, setProgressAnimation] = useState(false);
   const { width: contentWidth } = useWindowDimensions();
-
+  const [htmlWidth, setHtmlWidth] = useState<number>(0);
   useEffect(() => {
     // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
     progressValue.value = 0;
@@ -172,12 +172,16 @@ export const Toast: React.FC<ToastProps> = ({
           iconBorderRadius={styles?.iconBorderRadius}
         />
         <View
-          style={[title ? {} : { alignItems: 'center' }, { paddingRight: 3 }]}
+          onLayout={(e) => setHtmlWidth(e.nativeEvent.layout.width)}
+          style={[
+            title ? null : { alignItems: 'center' },
+            { flex: 1, minWidth: 0, paddingRight: 8 }, // clave: ocupa espacio, permite shrink y crea respiración derecha
+          ]}
         >
           {title &&
             (styles?.titleIsHtml ? (
               <RenderHTML
-                contentWidth={contentWidth}
+                contentWidth={htmlWidth || contentWidth} // usa ancho medido
                 source={{ html: `<span>${title}</span>` }}
                 baseStyle={{
                   fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
@@ -216,6 +220,7 @@ export const Toast: React.FC<ToastProps> = ({
                       styles?.titleColor ??
                       TOAST_CONFIG[type][toastStyle].titleColor,
                   },
+                  { flexShrink: 1 }, // asegura que envuelva dentro del espacio disponible
                 ]}
               >
                 {title ?? TOAST_CONFIG[type].title}
@@ -224,7 +229,7 @@ export const Toast: React.FC<ToastProps> = ({
 
           {styles?.messageIsHtml ? (
             <RenderHTML
-              contentWidth={contentWidth}
+              contentWidth={htmlWidth || contentWidth}
               source={{
                 html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`,
               }}
@@ -266,6 +271,7 @@ export const Toast: React.FC<ToastProps> = ({
                     TOAST_CONFIG[type][toastStyle].textColor,
                 },
                 !title && { fontWeight: 'bold' },
+                { flexShrink: 1 },
               ]}
             >
               {message ?? TOAST_CONFIG[type].message}

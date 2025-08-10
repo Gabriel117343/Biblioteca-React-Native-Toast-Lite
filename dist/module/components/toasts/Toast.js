@@ -134,11 +134,15 @@ export const Toast = ({
         iconResizeMode: styles?.iconResizeMode,
         iconUrl: iconUrl,
         iconSize: styles?.iconSize,
-        iconStyle: styles?.iconStyle
+        iconStyle: styles?.iconStyle,
+        iconRounded: styles?.iconRounded,
+        iconBorderRadius: styles?.iconBorderRadius
       }), /*#__PURE__*/_jsxs(View, {
-        style: title ? {} : {
+        style: [title ? {} : {
           alignItems: 'center'
-        },
+        }, {
+          paddingRight: 3
+        }],
         children: [title && (styles?.titleIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
           contentWidth: contentWidth,
           source: {

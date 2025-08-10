@@ -108,8 +108,8 @@ animationOutDuration = 500, // Duration for the animation
                 },
             ] }),
         React.createElement(View, { style: toastStyles.contentContainer },
-            React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconResizeMode: styles?.iconResizeMode, iconUrl: iconUrl, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle }),
-            React.createElement(View, { style: title ? {} : { alignItems: 'center' } },
+            React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconResizeMode: styles?.iconResizeMode, iconUrl: iconUrl, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle, iconRounded: styles?.iconRounded, iconBorderRadius: styles?.iconBorderRadius }),
+            React.createElement(View, { style: [title ? {} : { alignItems: 'center' }, { paddingRight: 3 }] },
                 title &&
                     (styles?.titleIsHtml ? (React.createElement(RenderHTML, { contentWidth: contentWidth, source: { html: `<span>${title}</span>` }, baseStyle: {
                             fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
