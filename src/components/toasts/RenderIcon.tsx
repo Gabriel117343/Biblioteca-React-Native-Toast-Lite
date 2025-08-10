@@ -24,6 +24,7 @@ interface RenderIconProps {
   iconColor?: string; // opcionales
   iconSize?: number;
   iconStyle?: 'solid' | 'outline' | 'default';
+  iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
 }
 export const RenderIcon: React.FC<RenderIconProps> = ({
   type,
@@ -33,6 +34,7 @@ export const RenderIcon: React.FC<RenderIconProps> = ({
   iconUrl,
   iconSize,
   iconStyle,
+  iconResizeMode,
 }) => {
   const iconProgress = useSharedValue(0);
 
@@ -59,10 +61,11 @@ export const RenderIcon: React.FC<RenderIconProps> = ({
       return (
         <Image
           source={{ uri: iconUrl }}
+          resizeMode={iconResizeMode ?? 'contain'}
           style={{
             width: iconSize ?? 25,
             height: iconSize ?? 25,
-            resizeMode: 'contain',
+            resizeMode: iconResizeMode ?? 'contain',
             borderRadius: (iconSize ?? 25) / 6,
           }}
         />

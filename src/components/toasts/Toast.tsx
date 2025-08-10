@@ -1,5 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, PanResponder } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  PanResponder,
+  useWindowDimensions,
+  Linking,
+} from 'react-native';
+
 import Animated, {
   FadeInUp,
   FadeOutLeft,
@@ -8,13 +16,13 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
   interpolate,
-} from 'react-native-reanimated';
-import {
   SlideInLeft,
   SlideOutRight,
   BounceIn,
   BounceOut,
 } from 'react-native-reanimated';
+
+import RenderHTML from 'react-native-render-html';
 
 import { toastStyles, positionStyles } from './commonStyles';
 import { ToastProps } from './types';
@@ -43,6 +51,8 @@ export const Toast: React.FC<ToastProps> = ({
   const [defaultAnimation, setDefaultAnimation] = useState(animationType);
   const [animationExitLeft, setAnimationExitLeft] = useState(false);
   const [progressAnimation, setProgressAnimation] = useState(false);
+  const { width: contentWidth } = useWindowDimensions();
+
   useEffect(() => {
     // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
     progressValue.value = 0;
@@ -154,40 +164,109 @@ export const Toast: React.FC<ToastProps> = ({
             styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor
           }
           icon={icon}
+          iconResizeMode={styles?.iconResizeMode}
           iconUrl={iconUrl}
           iconSize={styles?.iconSize}
           iconStyle={styles?.iconStyle}
         />
-
         <View style={title ? {} : { alignItems: 'center' }}>
-          {title && (
-            <Text
-              style={[
-                toastStyles.title,
-                {
+          {title &&
+            (styles?.titleIsHtml ? (
+              <RenderHTML
+                contentWidth={contentWidth}
+                source={{ html: `<span>${title}</span>` }}
+                baseStyle={{
                   fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
                   color:
                     styles?.titleColor ??
                     TOAST_CONFIG[type][toastStyle].titleColor,
-                },
-              ]}
-            >
-              {title ?? TOAST_CONFIG[type].title}
-            </Text>
-          )}
-          <Text
-            style={[
-              toastStyles.text,
-              {
+                }}
+                tagsStyles={{
+                  b: { fontWeight: 'bold' },
+                  strong: { fontWeight: 'bold' },
+                  i: { fontStyle: 'italic' },
+                  em: { fontStyle: 'italic' },
+                  u: { textDecorationLine: 'underline' },
+                  a: {
+                    color: styles?.linkColor ?? '#2E7DFF',
+                    textDecorationLine: 'underline',
+                    fontWeight: '500',
+                  },
+                  li: { marginBottom: 2 },
+                }}
+                renderersProps={{
+                  a: {
+                    onPress: (_, href) => {
+                      if (href) Linking.openURL(href).catch(() => {});
+                    },
+                  },
+                }}
+              />
+            ) : (
+              <Text
+                style={[
+                  toastStyles.title,
+                  {
+                    fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
+                    color:
+                      styles?.titleColor ??
+                      TOAST_CONFIG[type][toastStyle].titleColor,
+                  },
+                ]}
+              >
+                {title ?? TOAST_CONFIG[type].title}
+              </Text>
+            ))}
+
+          {styles?.messageIsHtml ? (
+            <RenderHTML
+              contentWidth={contentWidth}
+              source={{
+                html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`,
+              }}
+              baseStyle={{
                 fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
                 color:
                   styles?.textColor ?? TOAST_CONFIG[type][toastStyle].textColor,
-              },
-              !title && { fontWeight: 'bold' },
-            ]}
-          >
-            {message ?? TOAST_CONFIG[type].message}
-          </Text>
+                fontWeight: title ? 'normal' : 'bold',
+              }}
+              tagsStyles={{
+                b: { fontWeight: 'bold' },
+                strong: { fontWeight: 'bold' },
+                i: { fontStyle: 'italic' },
+                em: { fontStyle: 'italic' },
+                u: { textDecorationLine: 'underline' },
+                a: {
+                  color: styles?.linkColor ?? '#2E7DFF',
+                  textDecorationLine: 'underline',
+                  fontWeight: '500',
+                },
+                li: { marginBottom: 2 },
+              }}
+              renderersProps={{
+                a: {
+                  onPress: (_, href) => {
+                    if (href) Linking.openURL(href).catch(() => {});
+                  },
+                },
+              }}
+            />
+          ) : (
+            <Text
+              style={[
+                toastStyles.text,
+                {
+                  fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
+                  color:
+                    styles?.textColor ??
+                    TOAST_CONFIG[type][toastStyle].textColor,
+                },
+                !title && { fontWeight: 'bold' },
+              ]}
+            >
+              {message ?? TOAST_CONFIG[type].message}
+            </Text>
+          )}
         </View>
 
         {progress && (

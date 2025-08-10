@@ -4,15 +4,16 @@ import { create } from 'zustand';
 
 // ESTE ES EL ESTADO PRINCIPAL DE LA APLICACIÓN PARA LOS TOASTS QUE SE MUESTRAN EN LA PANTALLA
 
+const randomId = () => Math.random().toString(36).slice(2, 10);
 export const useToastStore = create(set => ({
   toasts: [],
   addToast: (type, message, props) => {
-    const id = props?.id ?? Math.floor(Math.random() * 100);
+    const normalizedId = String(props?.id ?? randomId()); // normaliza a string
     const date = new Date();
     // la duración por defecto prioriza la duración pasada en props
     const defaultDuration = !props?.duration ? type === 'loading' ? 100000 : 3000 : props.duration;
     let newToast = {
-      id,
+      id: normalizedId,
       type,
       message,
       props,
@@ -21,7 +22,7 @@ export const useToastStore = create(set => ({
     // si existe algún toast con  la id repetida se elimina y se agrega el nuevo manteniendo algunas propiedades
 
     set(state => {
-      const existingToastIndex = state.toasts.findIndex(toast => toast.id === id);
+      const existingToastIndex = state.toasts.findIndex(toast => toast.id === normalizedId);
       if (existingToastIndex !== -1) {
         const existingToast = state.toasts[existingToastIndex];
         newToast = {

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, PanResponder } from 'react-native';
 import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate, } from 'react-native-reanimated';
-import { SlideInLeft, SlideOutRight, BounceIn, BounceOut, } from 'react-native-reanimated'; // esta es una importación adicional
+import { SlideInLeft, SlideOutRight, BounceIn, BounceOut, } from 'react-native-reanimated';
 import { toastStyles, positionStyles } from './commonStyles';
 import { TOAST_CONFIG } from './toastConfig';
 import { toast } from '../../store/storeToast';
 import { RenderIcon } from './RenderIcon';
-export const Toast = ({ id, type, title, message, position, toastStyle = 'primary', icon, duration, // 3000 ms por defecto
+export const Toast = ({ id, type, title, message, position, toastStyle = 'primary', icon, iconUrl, duration, // 3000 ms por defecto
 progress = true, border = true, styles, // objeto de estilos personalizados
 animationType = 'fade', animationInDuration = 500, // Duration for the animation
 animationOutDuration = 500, // Duration for the animation
@@ -107,7 +107,7 @@ animationOutDuration = 500, // Duration for the animation
                 },
             ] }),
         React.createElement(View, { style: toastStyles.contentContainer },
-            React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle }),
+            React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconUrl: iconUrl, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle }),
             React.createElement(View, { style: title ? {} : { alignItems: 'center' } },
                 title && (React.createElement(Text, { style: [
                         toastStyles.title,

@@ -3,8 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, PanResponder } from 'react-native';
 import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate } from 'react-native-reanimated';
-import { SlideInLeft, SlideOutRight, BounceIn, BounceOut } from 'react-native-reanimated'; // esta es una importación adicional
-
+import { SlideInLeft, SlideOutRight, BounceIn, BounceOut } from 'react-native-reanimated';
 import { toastStyles, positionStyles } from "./commonStyles.js";
 import { TOAST_CONFIG } from "./toastConfig.js";
 import { toast } from "../../store/storeToast.js";
@@ -18,6 +17,7 @@ export const Toast = ({
   position,
   toastStyle = 'primary',
   icon,
+  iconUrl,
   duration,
   // 3000 ms por defecto
   progress = true,
@@ -128,6 +128,7 @@ export const Toast = ({
         toastStyle: toastStyle,
         iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor,
         icon: icon,
+        iconUrl: iconUrl,
         iconSize: styles?.iconSize,
         iconStyle: styles?.iconStyle
       }), /*#__PURE__*/_jsxs(View, {

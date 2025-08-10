@@ -149,10 +149,33 @@ Puedes personalizar el icono del toast usando:
 - `iconUrl`: una imagen remota (tiene prioridad sobre `icon` y los SVG por defecto).
 
 Ejemplos:
+
 ```tsx
-toast.success('Guardado', { iconUrl: 'https://example.com/success.png' });
+toast.success('Guardado', { iconUrl: 'https://example.com/success.png', iconResizeMode: 'cover' });
 // o
 toast.success('Ok', { icon: '✅' });
+// o usar el icono svg por defecto
+```
+## Contenido HTML en título y mensaje (opcional)
+
+Puedes renderizar HTML básico en `title` y/o `message` activando:
+- `styles.titleIsHtml`: renderiza HTML en el título.
+- `styles.messageIsHtml`: renderiza HTML en el mensaje.
+
+Etiquetas soportadas (básicas): `<b> <strong> <i> <em> <u> <br> <a> <li> <span>`.
+Los enlaces `<a href="...">` se abrirán con Linking.openURL. Atributos como `target` o `rel` no aplican en React Native.
+
+Ejemplos:
+```tsx
+toast.info('¡Pide tus combos! Ingresa al <a href="https://example.com/menu">menú</a> <u>aquí</u> 🍔', {
+  styles: { messageIsHtml: true, linkColor: '#2E7DFF' },
+});
+
+
+toast.success('<b>Guardado con éxito</b>', {
+  title: 'Resultado',
+  styles: { titleIsHtml: true },
+});
 ```
 
 ### Tipos de Toast
@@ -183,27 +206,32 @@ toast.success('Ok', { icon: '✅' });
 | `border`             | `boolean` _(opcional)_                                        | Indica si se muestra un borde alrededor del toast.                                                       |
 | `inheritStyles`      | `boolean` _(opcional)_                                        | Indica si se heredan los styles del toast con el mismo id.                                               | 
 
-### propiedad de los estilos personalizados
+### Propiedad de los estilos personalizados
 
-| **Propiedad**       | **Tipo**                                                         | **Descripción**                                                                             |
-|---------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------|
-| `titleColor`        | `string` _(opcional)_                                            | Color del título del toast.                                                                 |
-| `textColor`         | `string` _(opcional)_                                            | Color del texto del toast.                                                                  |
-| `titleSize`         | `number` _(opcional)_                                            | Tamaño de la fuente del título del toast.                                                   |
-| `textSize`          | `number` _(opcional)_                                            | Tamaño de la fuente del texto del toast.                                                    |
-| `backgroundColor`   | `string` _(opcional)_                                            | Color de fondo del toast.                                                                   |
-| `borderRadius`      | `number` _(opcional)_                                            | Radio de las esquinas del toast.                                                            |
-| `borderColor`       | `string` _(opcional)_                                            | Color del borde del toast.                                                                  |
-| `iconSize`          | `number` _(opcional)_                                            | Tamaño del ícono dentro del toast.                                                          |
-| `iconStyle`         | `'solid' - 'outline' - 'default'` _(opcional)_                   | Estilo del ícono en el toast.                                                               |
-| `loadingColor`      | `string` _(opcional)_                                            | Color del indicador de carga si se muestra un toast de tipo loading.                        |
-| `progressColor`     | `string` _(opcional)_                                            | Color de la barra de progreso del toast.                                                    |
-| `width`             | `number` _(opcional)_                                            | Ancho personalizado del toast.                                                              |
-| `opacity`      | `number` _(optional)_                                        | Indica la opacidad del fondo(0.9 por defecto).                                       |
-| `height`            | `number` _(opcional)_                                            | Altura personalizada del toast.                                                             |
-| `top`               | `number` _(opcional)_                                            | Posición superior personalizada del toast en la pantalla.                                   |
-| `bottom`            | `number` _(opcional)_                                            | Posición inferior personalizada del toast en la pantalla.                                   |
-| `left`              | `number` _(opcional)_                                            | Posición izquierda personalizada del toast en la pantalla.                                  |
-| `right`             | `number` _(opcional)_                                            | Posición derecha personalizada del toast en la pantalla.                                    |
+| **Propiedad**     | **Tipo**                                   | **Descripción**                                                                 |
+|-------------------|--------------------------------------------|---------------------------------------------------------------------------------|
+| `titleColor`      | `string` _(opcional)_                      | Color del título del toast.                                                     |
+| `textColor`       | `string` _(opcional)_                      | Color del texto del toast.                                                      |
+| `titleSize`       | `number` _(opcional)_                      | Tamaño de la fuente del título del toast.                                       |
+| `textSize`        | `number` _(opcional)_                      | Tamaño de la fuente del texto del toast.                                        |
+| `backgroundColor` | `string` _(opcional)_                      | Color de fondo del toast.                                                       |
+| `borderRadius`    | `number` _(opcional)_                      | Radio de las esquinas del toast.                                                |
+| `borderColor`     | `string` _(opcional)_                      | Color del borde del toast.                                                      |
+| `iconSize`        | `number` _(opcional)_                      | Tamaño del ícono dentro del toast.                                              |
+| `iconColor`       | `string` _(opcional)_                      | Color del ícono (aplica a SVG/emoji, no a imágenes `iconUrl`).                  |
+| `iconStyle`       | `'solid' \| 'outline' \| 'default'` _(opcional)_ | Estilo del ícono en el toast.                                                   |
+| `loadingColor`    | `string` _(opcional)_                      | Color del indicador de carga (tipo `loading`).                                  |
+| `progressColor`   | `string` _(opcional)_                      | Color de la barra de progreso.                                                  |
+| `width`           | `number` _(opcional)_                      | Ancho personalizado del toast.                                                  |
+| `height`          | `number` _(opcional)_                      | Altura personalizada del toast.                                                 |
+| `opacity`         | `number` _(opcional)_                      | Opacidad del fondo (0.9 por defecto).                                           |
+| `top`             | `number` _(opcional)_                      | Posición superior personalizada del toast.                                      |
+| `bottom`          | `number` _(opcional)_                      | Posición inferior personalizada del toast.                                      |
+| `left`            | `number` _(opcional)_                      | Posición izquierda personalizada del toast.                                     |
+| `right`           | `number` _(opcional)_                      | Posición derecha personalizada del toast.                                       |
+| `titleIsHtml`     | `boolean` _(opcional)_                     | Renderiza HTML en el título.                                                    |
+| `messageIsHtml`   | `boolean` _(opcional)_                     | Renderiza HTML en el mensaje.                                                   |
+| `linkColor`       | `string` _(opcional)_                      | Color para enlaces `<a>` cuando se                               |
+| `iconResizeMode`       | `string` _(opcional)_                      | Para controlar como se ajusta la imagen url, por defecto 'contain'                               |
 
  <img src="https://github.com/user-attachments/assets/e0d00a53-5e7d-4a41-872d-509413e347f7" alt="NASA Image 1" width="25%" />
