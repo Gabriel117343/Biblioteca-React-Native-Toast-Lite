@@ -27,6 +27,9 @@ export interface ToastProps {
     border?: boolean;
     inheritStyles?: boolean;
     styles?: {
+      titleIsHtml?: boolean;
+      messageIsHtml?: boolean;
+      linkColor?: string;
       titleColor?: string;
       textColor?: string;
       titleSize?: number;
@@ -36,6 +39,7 @@ export interface ToastProps {
       borderColor?: string;
       iconSize?: number;
       iconStyle?: 'solid' | 'outline' | 'default';
+      iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
       loadingColor?: string;
       progressColor?: string;
       opacity?: number;

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Text, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, Image, ActivityIndicator, View } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -25,6 +25,8 @@ interface RenderIconProps {
   iconSize?: number;
   iconStyle?: 'solid' | 'outline' | 'default';
   iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
+  iconRounded?: boolean; // true => círculo perfecto
+  iconBorderRadius?: number; // override manual del radio
 }
 export const RenderIcon: React.FC<RenderIconProps> = ({
   type,
@@ -35,9 +37,19 @@ export const RenderIcon: React.FC<RenderIconProps> = ({
   iconSize,
   iconStyle,
   iconResizeMode,
+  iconRounded,
+  iconBorderRadius,
 }) => {
+  const [imageLoading, setImageLoading] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const iconProgress = useSharedValue(0);
-
+  useEffect(() => {
+    // al cambiar la url, resetea estados
+    if (iconUrl) {
+      setImageLoading(true);
+      setLoadFailed(false);
+    }
+  }, [iconUrl]);
   useEffect(() => {
     // restart the progressValue when the type changes
     iconProgress.value = 0;
@@ -58,17 +70,78 @@ export const RenderIcon: React.FC<RenderIconProps> = ({
   const renderIcon = () => {
     // Prioridad 1: iconUrl (imagen remota)
     if (iconUrl) {
+      const size = iconSize ?? 25;
+      const radius =
+        typeof iconBorderRadius === 'number'
+          ? Math.max(0, Math.round(iconBorderRadius))
+          : iconRounded
+            ? Math.round(size / 2)
+            : Math.round(size / 6);
+
+      // fallback si falló la imagen remota
+      if (loadFailed) {
+        return icon ? (
+          <Text style={{ fontSize: size }}>{icon}</Text>
+        ) : type === 'error' ? (
+          <ErrorSvg
+            toastStyle={toastStyle}
+            iconColor={iconColor}
+            iconSize={size}
+            iconStyle={iconStyle}
+          />
+        ) : type === 'success' ? (
+          <SuccessSvg
+            toastStyle={toastStyle}
+            iconColor={iconColor}
+            iconSize={size}
+            iconStyle={iconStyle}
+          />
+        ) : type === 'info' ? (
+          <InfoSvg
+            toastStyle={toastStyle}
+            iconColor={iconColor}
+            iconSize={size}
+            iconStyle={iconStyle}
+          />
+        ) : type === 'warning' ? (
+          <WarningSvg
+            toastStyle={toastStyle}
+            iconColor={iconColor}
+            iconSize={size}
+            iconStyle={iconStyle}
+          />
+        ) : (
+          <CustomLoading color={iconColor} size={size} />
+        );
+      }
+
       return (
-        <Image
-          source={{ uri: iconUrl }}
-          resizeMode={iconResizeMode ?? 'contain'}
+        <View
           style={{
-            width: iconSize ?? 25,
-            height: iconSize ?? 25,
-            resizeMode: iconResizeMode ?? 'contain',
-            borderRadius: (iconSize ?? 25) / 6,
+            width: size,
+            height: size,
+            borderRadius: radius,
+            overflow: 'hidden',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
-        />
+        >
+          <Image
+            source={{ uri: iconUrl }}
+            resizeMode={iconResizeMode ?? 'contain'}
+            onLoadStart={() => setImageLoading(true)}
+            onLoadEnd={() => setImageLoading(false)}
+            onError={() => {
+              setImageLoading(false);
+              setLoadFailed(true);
+            }}
+            blurRadius={imageLoading ? 8 : 0}
+            style={{ width: '100%', height: '100%' }}
+          />
+          {imageLoading && (
+            <ActivityIndicator size="small" color={iconColor ?? '#999'} />
+          )}
+        </View>
       );
     }
     // Prioridad 2: icon (emoji)

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, PanResponder } from 'react-native';
-import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate, } from 'react-native-reanimated';
-import { SlideInLeft, SlideOutRight, BounceIn, BounceOut, } from 'react-native-reanimated';
+import { View, Text, StyleSheet, PanResponder, useWindowDimensions, Linking, } from 'react-native';
+import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate, SlideInLeft, SlideOutRight, BounceIn, BounceOut, } from 'react-native-reanimated';
+import RenderHTML from 'react-native-render-html';
 import { toastStyles, positionStyles } from './commonStyles';
 import { TOAST_CONFIG } from './toastConfig';
 import { toast } from '../../store/storeToast';
@@ -15,6 +15,7 @@ animationOutDuration = 500, // Duration for the animation
     const [defaultAnimation, setDefaultAnimation] = useState(animationType);
     const [animationExitLeft, setAnimationExitLeft] = useState(false);
     const [progressAnimation, setProgressAnimation] = useState(false);
+    const { width: contentWidth } = useWindowDimensions();
     useEffect(() => {
         // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
         progressValue.value = 0;
@@ -107,24 +108,74 @@ animationOutDuration = 500, // Duration for the animation
                 },
             ] }),
         React.createElement(View, { style: toastStyles.contentContainer },
-            React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconUrl: iconUrl, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle }),
+            React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconResizeMode: styles?.iconResizeMode, iconUrl: iconUrl, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle }),
             React.createElement(View, { style: title ? {} : { alignItems: 'center' } },
-                title && (React.createElement(Text, { style: [
-                        toastStyles.title,
-                        {
+                title &&
+                    (styles?.titleIsHtml ? (React.createElement(RenderHTML, { contentWidth: contentWidth, source: { html: `<span>${title}</span>` }, baseStyle: {
                             fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
                             color: styles?.titleColor ??
                                 TOAST_CONFIG[type][toastStyle].titleColor,
+                        }, tagsStyles: {
+                            b: { fontWeight: 'bold' },
+                            strong: { fontWeight: 'bold' },
+                            i: { fontStyle: 'italic' },
+                            em: { fontStyle: 'italic' },
+                            u: { textDecorationLine: 'underline' },
+                            a: {
+                                color: styles?.linkColor ?? '#2E7DFF',
+                                textDecorationLine: 'underline',
+                                fontWeight: '500',
+                            },
+                            li: { marginBottom: 2 },
+                        }, renderersProps: {
+                            a: {
+                                onPress: (_, href) => {
+                                    if (href)
+                                        Linking.openURL(href).catch(() => { });
+                                },
+                            },
+                        } })) : (React.createElement(Text, { style: [
+                            toastStyles.title,
+                            {
+                                fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
+                                color: styles?.titleColor ??
+                                    TOAST_CONFIG[type][toastStyle].titleColor,
+                            },
+                        ] }, title ?? TOAST_CONFIG[type].title))),
+                styles?.messageIsHtml ? (React.createElement(RenderHTML, { contentWidth: contentWidth, source: {
+                        html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`,
+                    }, baseStyle: {
+                        fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
+                        color: styles?.textColor ?? TOAST_CONFIG[type][toastStyle].textColor,
+                        fontWeight: title ? 'normal' : 'bold',
+                    }, tagsStyles: {
+                        b: { fontWeight: 'bold' },
+                        strong: { fontWeight: 'bold' },
+                        i: { fontStyle: 'italic' },
+                        em: { fontStyle: 'italic' },
+                        u: { textDecorationLine: 'underline' },
+                        a: {
+                            color: styles?.linkColor ?? '#2E7DFF',
+                            textDecorationLine: 'underline',
+                            fontWeight: '500',
                         },
-                    ] }, title ?? TOAST_CONFIG[type].title)),
-                React.createElement(Text, { style: [
+                        li: { marginBottom: 2 },
+                    }, renderersProps: {
+                        a: {
+                            onPress: (_, href) => {
+                                if (href)
+                                    Linking.openURL(href).catch(() => { });
+                            },
+                        },
+                    } })) : (React.createElement(Text, { style: [
                         toastStyles.text,
                         {
                             fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
-                            color: styles?.textColor ?? TOAST_CONFIG[type][toastStyle].textColor,
+                            color: styles?.textColor ??
+                                TOAST_CONFIG[type][toastStyle].textColor,
                         },
                         !title && { fontWeight: 'bold' },
-                    ] }, message ?? TOAST_CONFIG[type].message)),
+                    ] }, message ?? TOAST_CONFIG[type].message))),
             progress && (React.createElement(View, { style: toastStyles.progressContainer },
                 React.createElement(Animated.View, { style: [
                         toastStyles.progressBar,

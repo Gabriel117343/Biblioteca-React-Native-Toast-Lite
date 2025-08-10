@@ -36,6 +36,8 @@ export interface ToastProps {
     iconSize?: number;
     iconStyle?: 'solid' | 'outline' | 'default';
     iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
+    iconRounded?: boolean; // true => círculo perfecto
+    iconBorderRadius?: number; // override manual del radio
     progressColor?: string;
     opacity?: number;
     width?: number;

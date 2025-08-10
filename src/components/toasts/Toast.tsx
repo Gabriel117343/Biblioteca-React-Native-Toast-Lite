@@ -168,8 +168,12 @@ export const Toast: React.FC<ToastProps> = ({
           iconUrl={iconUrl}
           iconSize={styles?.iconSize}
           iconStyle={styles?.iconStyle}
+          iconRounded={styles?.iconRounded}
+          iconBorderRadius={styles?.iconBorderRadius}
         />
-        <View style={title ? {} : { alignItems: 'center' }}>
+        <View
+          style={[title ? {} : { alignItems: 'center' }, { paddingRight: 3 }]}
+        >
           {title &&
             (styles?.titleIsHtml ? (
               <RenderHTML
