@@ -1,6 +1,6 @@
 {
   "name": "react-native-toast-lite",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "description": "🍞 Este modulo se trata de mostrar Toast en React Native",
   "main": "./dist\\module\\index.js",
   "types": "./dist\\module\\react-native-toast-lite.d.ts",

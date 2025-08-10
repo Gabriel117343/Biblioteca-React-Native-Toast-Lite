@@ -36,6 +36,7 @@ export const Toast = ({
   const {
     width: contentWidth
   } = useWindowDimensions();
+  const [htmlWidth, setHtmlWidth] = useState(0);
   useEffect(() => {
     // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
     progressValue.value = 0;
@@ -138,13 +139,18 @@ export const Toast = ({
         iconRounded: styles?.iconRounded,
         iconBorderRadius: styles?.iconBorderRadius
       }), /*#__PURE__*/_jsxs(View, {
-        style: [title ? {} : {
+        onLayout: e => setHtmlWidth(e.nativeEvent.layout.width),
+        style: [title ? null : {
           alignItems: 'center'
         }, {
-          paddingRight: 3
-        }],
+          flex: 1,
+          minWidth: 0,
+          paddingRight: 8
+        } // clave: ocupa espacio, permite shrink y crea respiración derecha
+        ],
         children: [title && (styles?.titleIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
-          contentWidth: contentWidth,
+          contentWidth: htmlWidth || contentWidth // usa ancho medido
+          ,
           source: {
             html: `<span>${title}</span>`
           },
@@ -188,10 +194,13 @@ export const Toast = ({
           style: [toastStyles.title, {
             fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
             color: styles?.titleColor ?? TOAST_CONFIG[type][toastStyle].titleColor
-          }],
+          }, {
+            flexShrink: 1
+          } // asegura que envuelva dentro del espacio disponible
+          ],
           children: title ?? TOAST_CONFIG[type].title
         })), styles?.messageIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
-          contentWidth: contentWidth,
+          contentWidth: htmlWidth || contentWidth,
           source: {
             html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`
           },
@@ -238,6 +247,8 @@ export const Toast = ({
             color: styles?.textColor ?? TOAST_CONFIG[type][toastStyle].textColor
           }, !title && {
             fontWeight: 'bold'
+          }, {
+            flexShrink: 1
           }],
           children: message ?? TOAST_CONFIG[type].message
         })]

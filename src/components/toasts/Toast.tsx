@@ -116,6 +116,12 @@ export const Toast: React.FC<ToastProps> = ({
         } else return FadeOutLeft.duration(animationOutDuration);
     }
   };
+
+  // Normaliza saltos de línea:
+  // - toBr: convierte \r\n, \n o texto literal "\n" a <br/> para HTML
+  // - toNL: convierte texto literal "\n" a salto real para <Text>
+  const toBr = (s?: string) => (s ?? '').replace(/\r\n|\r|\n|\\n/g, '<br/>');
+  const toNL = (s?: string) => (s ?? '').replace(/\\n/g, '\n');
   // Código Refactorizado
   return (
     <Animated.View
@@ -175,14 +181,16 @@ export const Toast: React.FC<ToastProps> = ({
           onLayout={(e) => setHtmlWidth(e.nativeEvent.layout.width)}
           style={[
             title ? null : { alignItems: 'center' },
-            { flex: 1, minWidth: 0, paddingRight: 8 }, // clave: ocupa espacio, permite shrink y crea respiración derecha
+            { flex: 1, minWidth: 0, paddingRight: 5 }, // clave: ocupa espacio, permite shrink y crea respiración derecha
           ]}
         >
           {title &&
             (styles?.titleIsHtml ? (
               <RenderHTML
                 contentWidth={htmlWidth || contentWidth} // usa ancho medido
-                source={{ html: `<span>${title}</span>` }}
+                source={{
+                  html: `<span>${toBr(title ?? TOAST_CONFIG[type].title)}</span>`,
+                }}
                 baseStyle={{
                   fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
                   color:
@@ -223,7 +231,7 @@ export const Toast: React.FC<ToastProps> = ({
                   { flexShrink: 1 }, // asegura que envuelva dentro del espacio disponible
                 ]}
               >
-                {title ?? TOAST_CONFIG[type].title}
+                {toNL(title ?? TOAST_CONFIG[type].title)}
               </Text>
             ))}
 
@@ -231,7 +239,7 @@ export const Toast: React.FC<ToastProps> = ({
             <RenderHTML
               contentWidth={htmlWidth || contentWidth}
               source={{
-                html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`,
+                html: `<span>${toBr(message ?? TOAST_CONFIG[type].message)}</span>`,
               }}
               baseStyle={{
                 fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
@@ -274,7 +282,7 @@ export const Toast: React.FC<ToastProps> = ({
                 { flexShrink: 1 },
               ]}
             >
-              {message ?? TOAST_CONFIG[type].message}
+              {toNL(message ?? TOAST_CONFIG[type].message)}
             </Text>
           )}
         </View>

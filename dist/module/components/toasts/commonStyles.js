@@ -42,7 +42,7 @@ export const toastStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     gap: 10,
-    padding: 12
+    padding: 10
   },
   progressContainer: {
     height: 3,

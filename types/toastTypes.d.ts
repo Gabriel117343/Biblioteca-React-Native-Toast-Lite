@@ -2,6 +2,33 @@ export type ToastType = 'error' | 'success' | 'info' | 'warning' | 'loading';
 
 type validURL = `http://${string}` | `https://${string}`;
 
+export interface ToastPropsStyles {
+  titleIsHtml?: boolean;
+  messageIsHtml?: boolean;
+  linkColor?: string;
+  titleColor?: string;
+  textColor?: string;
+  titleSize?: number;
+  textSize?: number;
+  backgroundColor?: string;
+  borderRadius?: number;
+  borderColor?: string;
+  iconColor?: string;
+  iconSize?: number;
+  iconStyle?: 'solid' | 'outline' | 'default';
+  iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
+  iconRounded?: boolean; // true => círculo perfecto
+  iconBorderRadius?: number; // override manual del radio
+  progressColor?: string;
+  opacity?: number;
+  width?: number;
+  height?: number;
+  top?: number;
+  left?: number;
+  right?: number;
+  bottom?: number;
+}
+
 export interface ToastProps {
   type: ToastType;
   message: string;
@@ -26,31 +53,6 @@ export interface ToastProps {
     iconUrl?: validURL;
     border?: boolean;
     inheritStyles?: boolean;
-    styles?: {
-      titleIsHtml?: boolean;
-      messageIsHtml?: boolean;
-      linkColor?: string;
-      titleColor?: string;
-      textColor?: string;
-      titleSize?: number;
-      textSize?: number;
-      backgroundColor?: string;
-      borderRadius?: number;
-      borderColor?: string;
-      iconSize?: number;
-      iconStyle?: 'solid' | 'outline' | 'default';
-      iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
-      iconRounded?: boolean; // true => círculo perfecto
-      iconBorderRadius?: number; // override manual del radio
-      loadingColor?: string;
-      progressColor?: string;
-      opacity?: number;
-      width?: number;
-      height?: number;
-      top?: number;
-      bottom?: number;
-      left?: number;
-      right?: number;
-    };
+    styles?: ToastPropsStyles;
   };
 }

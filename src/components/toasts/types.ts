@@ -1,4 +1,32 @@
 type validURL = `http://${string}` | `https://${string}`;
+
+export interface ToastPropsStyles {
+  titleIsHtml?: boolean;
+  messageIsHtml?: boolean;
+  linkColor?: string;
+  titleColor?: string;
+  textColor?: string;
+  titleSize?: number;
+  textSize?: number;
+  backgroundColor?: string;
+  borderRadius?: number;
+  borderColor?: string;
+  iconColor?: string;
+  iconSize?: number;
+  iconStyle?: 'solid' | 'outline' | 'default';
+  iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
+  iconRounded?: boolean; // true => círculo perfecto
+  iconBorderRadius?: number; // override manual del radio
+  progressColor?: string;
+  opacity?: number;
+  width?: number;
+  height?: number;
+  top?: number;
+  left?: number;
+  right?: number;
+  bottom?: number;
+}
+
 export interface ToastProps {
   id: string;
   type: 'error' | 'success' | 'info' | 'warning' | 'loading';
@@ -21,30 +49,5 @@ export interface ToastProps {
   icon?: string; // emoji
   iconUrl?: validURL;
   border?: boolean;
-  styles?: {
-    titleIsHtml?: boolean;
-    messageIsHtml?: boolean;
-    linkColor?: string;
-    titleColor?: string;
-    textColor?: string;
-    titleSize?: number;
-    textSize?: number;
-    backgroundColor?: string;
-    borderRadius?: number;
-    borderColor?: string;
-    iconColor?: string;
-    iconSize?: number;
-    iconStyle?: 'solid' | 'outline' | 'default';
-    iconResizeMode?: 'contain' | 'cover' | 'stretch' | 'repeat' | 'center';
-    iconRounded?: boolean; // true => círculo perfecto
-    iconBorderRadius?: number; // override manual del radio
-    progressColor?: string;
-    opacity?: number;
-    width?: number;
-    height?: number;
-    top?: number;
-    left?: number;
-    right?: number;
-    bottom?: number;
-  };
+  styles?: ToastPropsStyles;
 }

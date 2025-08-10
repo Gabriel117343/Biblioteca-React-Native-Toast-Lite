@@ -16,6 +16,7 @@ animationOutDuration = 500, // Duration for the animation
     const [animationExitLeft, setAnimationExitLeft] = useState(false);
     const [progressAnimation, setProgressAnimation] = useState(false);
     const { width: contentWidth } = useWindowDimensions();
+    const [htmlWidth, setHtmlWidth] = useState(0);
     useEffect(() => {
         // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
         progressValue.value = 0;
@@ -109,9 +110,12 @@ animationOutDuration = 500, // Duration for the animation
             ] }),
         React.createElement(View, { style: toastStyles.contentContainer },
             React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconResizeMode: styles?.iconResizeMode, iconUrl: iconUrl, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle, iconRounded: styles?.iconRounded, iconBorderRadius: styles?.iconBorderRadius }),
-            React.createElement(View, { style: [title ? {} : { alignItems: 'center' }, { paddingRight: 3 }] },
+            React.createElement(View, { onLayout: (e) => setHtmlWidth(e.nativeEvent.layout.width), style: [
+                    title ? null : { alignItems: 'center' },
+                    { flex: 1, minWidth: 0, paddingRight: 8 }, // clave: ocupa espacio, permite shrink y crea respiración derecha
+                ] },
                 title &&
-                    (styles?.titleIsHtml ? (React.createElement(RenderHTML, { contentWidth: contentWidth, source: { html: `<span>${title}</span>` }, baseStyle: {
+                    (styles?.titleIsHtml ? (React.createElement(RenderHTML, { contentWidth: htmlWidth || contentWidth, source: { html: `<span>${title}</span>` }, baseStyle: {
                             fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
                             color: styles?.titleColor ??
                                 TOAST_CONFIG[type][toastStyle].titleColor,
@@ -141,8 +145,9 @@ animationOutDuration = 500, // Duration for the animation
                                 color: styles?.titleColor ??
                                     TOAST_CONFIG[type][toastStyle].titleColor,
                             },
+                            { flexShrink: 1 }, // asegura que envuelva dentro del espacio disponible
                         ] }, title ?? TOAST_CONFIG[type].title))),
-                styles?.messageIsHtml ? (React.createElement(RenderHTML, { contentWidth: contentWidth, source: {
+                styles?.messageIsHtml ? (React.createElement(RenderHTML, { contentWidth: htmlWidth || contentWidth, source: {
                         html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`,
                     }, baseStyle: {
                         fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
@@ -175,6 +180,7 @@ animationOutDuration = 500, // Duration for the animation
                                 TOAST_CONFIG[type][toastStyle].textColor,
                         },
                         !title && { fontWeight: 'bold' },
+                        { flexShrink: 1 },
                     ] }, message ?? TOAST_CONFIG[type].message))),
             progress && (React.createElement(View, { style: toastStyles.progressContainer },
                 React.createElement(Animated.View, { style: [
