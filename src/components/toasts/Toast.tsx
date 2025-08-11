@@ -6,6 +6,7 @@ import {
   PanResponder,
   useWindowDimensions,
   Linking,
+  Platform,
 } from 'react-native';
 
 import Animated, {
@@ -132,11 +133,21 @@ export const Toast: React.FC<ToastProps> = ({
         positionStyles[position ?? 'top'],
         {
           borderWidth: border ? 1 : 0,
-          width: styles?.width ?? '90%',
+          // ya sea para web o mobile
+          width:
+            styles?.width !== undefined
+              ? styles.width
+              : Platform.OS === 'web'
+                ? 400
+                : '90%',
+          maxWidth: styles?.maxWidth,
+          minWidth: styles?.minWidth,
           minHeight: styles?.height ?? 60,
           borderColor:
             styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor,
           borderRadius: styles?.borderRadius ?? 15,
+          // asegura stacking por encima de contenido app
+          zIndex: styles?.zIndex ?? (Platform.OS === 'web' ? 2147483001 : 10),
           // Aplica top, bottom, left, right solo si están definidos para que no ignore positionStyles por defecto
           ...(styles?.top !== undefined && { top: styles.top }),
           ...(styles?.bottom !== undefined && { bottom: styles.bottom }),

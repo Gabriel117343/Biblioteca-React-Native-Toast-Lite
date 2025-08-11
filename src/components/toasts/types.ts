@@ -19,12 +19,15 @@ export interface ToastPropsStyles {
   iconBorderRadius?: number; // override manual del radio
   progressColor?: string;
   opacity?: number;
-  width?: number;
+  width?: number | 'auto' | `${number}%`;
+  maxWidth?: number | 'auto' | `${number}%`;
+  minWidth?: number | 'auto' | `${number}%`;
   height?: number;
   top?: number;
   left?: number;
   right?: number;
   bottom?: number;
+  zIndex?: number;
 }
 
 export interface ToastProps {

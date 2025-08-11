@@ -9,7 +9,10 @@ export const Toaster = () => {
   const { toasts } = useToastStore();
   // se renderiza el componente Toast con las props de cada toast
   return (
-    <View style={[toastStyles.containerToast, StyleSheet.absoluteFillObject]}>
+    <View
+      pointerEvents="box-none"
+      style={[toastStyles.containerToast, StyleSheet.absoluteFillObject]}
+    >
       {toasts.map((toast: ToastProps) => (
         <Toast
           key={toast.props?.id}

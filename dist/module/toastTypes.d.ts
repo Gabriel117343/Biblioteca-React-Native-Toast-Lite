@@ -27,6 +27,7 @@ export interface ToastPropsStyles {
   left?: number;
   right?: number;
   bottom?: number;
+  zIndex?: number;
 }
 
 export interface ToastProps {

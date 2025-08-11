@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, PanResponder, useWindowDimensions, Linking } from 'react-native';
+import { View, Text, StyleSheet, PanResponder, useWindowDimensions, Linking, Platform } from 'react-native';
 import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate, SlideInLeft, SlideOutRight, BounceIn, BounceOut } from 'react-native-reanimated';
 import RenderHTML from 'react-native-render-html';
 import { toastStyles, positionStyles } from "./commonStyles.js";
@@ -93,6 +93,12 @@ export const Toast = ({
         } else return FadeOutLeft.duration(animationOutDuration);
     }
   };
+
+  // Normaliza saltos de línea:
+  // - toBr: convierte \r\n, \n o texto literal "\n" a <br/> para HTML
+  // - toNL: convierte texto literal "\n" a salto real para <Text>
+  const toBr = s => (s ?? '').replace(/\r\n|\r|\n|\\n/g, '<br/>');
+  const toNL = s => (s ?? '').replace(/\\n/g, '\n');
   // Código Refactorizado
   return /*#__PURE__*/_jsxs(Animated.View, {
     entering: handleAnimation('entering'),
@@ -103,6 +109,8 @@ export const Toast = ({
       minHeight: styles?.height ?? 60,
       borderColor: styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor,
       borderRadius: styles?.borderRadius ?? 15,
+      // asegura stacking por encima de contenido app
+      zIndex: styles?.zIndex ?? (Platform.OS === 'web' ? 2147483001 : 10),
       // Aplica top, bottom, left, right solo si están definidos para que no ignore positionStyles por defecto
       ...(styles?.top !== undefined && {
         top: styles.top
@@ -145,14 +153,14 @@ export const Toast = ({
         }, {
           flex: 1,
           minWidth: 0,
-          paddingRight: 8
+          paddingRight: 5
         } // clave: ocupa espacio, permite shrink y crea respiración derecha
         ],
         children: [title && (styles?.titleIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
           contentWidth: htmlWidth || contentWidth // usa ancho medido
           ,
           source: {
-            html: `<span>${title}</span>`
+            html: `<span>${toBr(title ?? TOAST_CONFIG[type].title)}</span>`
           },
           baseStyle: {
             fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
@@ -198,11 +206,11 @@ export const Toast = ({
             flexShrink: 1
           } // asegura que envuelva dentro del espacio disponible
           ],
-          children: title ?? TOAST_CONFIG[type].title
+          children: toNL(title ?? TOAST_CONFIG[type].title)
         })), styles?.messageIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
           contentWidth: htmlWidth || contentWidth,
           source: {
-            html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`
+            html: `<span>${toBr(message ?? TOAST_CONFIG[type].message)}</span>`
           },
           baseStyle: {
             fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
@@ -250,7 +258,7 @@ export const Toast = ({
           }, {
             flexShrink: 1
           }],
-          children: message ?? TOAST_CONFIG[type].message
+          children: toNL(message ?? TOAST_CONFIG[type].message)
         })]
       }), progress && /*#__PURE__*/_jsx(View, {
         style: toastStyles.progressContainer,

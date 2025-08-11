@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, PanResponder, useWindowDimensions, Linking, } from 'react-native';
+import { View, Text, StyleSheet, PanResponder, useWindowDimensions, Linking, Platform, } from 'react-native';
 import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate, SlideInLeft, SlideOutRight, BounceIn, BounceOut, } from 'react-native-reanimated';
 import RenderHTML from 'react-native-render-html';
 import { toastStyles, positionStyles } from './commonStyles';
@@ -79,6 +79,11 @@ animationOutDuration = 500, // Duration for the animation
                     return FadeOutLeft.duration(animationOutDuration);
         }
     };
+    // Normaliza saltos de línea:
+    // - toBr: convierte \r\n, \n o texto literal "\n" a <br/> para HTML
+    // - toNL: convierte texto literal "\n" a salto real para <Text>
+    const toBr = (s) => (s ?? '').replace(/\r\n|\r|\n|\\n/g, '<br/>');
+    const toNL = (s) => (s ?? '').replace(/\\n/g, '\n');
     // Código Refactorizado
     return (React.createElement(Animated.View, { entering: handleAnimation('entering'), exiting: handleAnimation('exiting'), style: [
             toastStyles.container,
@@ -89,6 +94,8 @@ animationOutDuration = 500, // Duration for the animation
                 minHeight: styles?.height ?? 60,
                 borderColor: styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor,
                 borderRadius: styles?.borderRadius ?? 15,
+                // asegura stacking por encima de contenido app
+                zIndex: styles?.zIndex ?? (Platform.OS === 'web' ? 2147483001 : 10),
                 // Aplica top, bottom, left, right solo si están definidos para que no ignore positionStyles por defecto
                 ...(styles?.top !== undefined && { top: styles.top }),
                 ...(styles?.bottom !== undefined && { bottom: styles.bottom }),
@@ -112,10 +119,12 @@ animationOutDuration = 500, // Duration for the animation
             React.createElement(RenderIcon, { type: type, toastStyle: toastStyle, iconColor: styles?.iconColor ?? TOAST_CONFIG[type][toastStyle].iconColor, icon: icon, iconResizeMode: styles?.iconResizeMode, iconUrl: iconUrl, iconSize: styles?.iconSize, iconStyle: styles?.iconStyle, iconRounded: styles?.iconRounded, iconBorderRadius: styles?.iconBorderRadius }),
             React.createElement(View, { onLayout: (e) => setHtmlWidth(e.nativeEvent.layout.width), style: [
                     title ? null : { alignItems: 'center' },
-                    { flex: 1, minWidth: 0, paddingRight: 8 }, // clave: ocupa espacio, permite shrink y crea respiración derecha
+                    { flex: 1, minWidth: 0, paddingRight: 5 }, // clave: ocupa espacio, permite shrink y crea respiración derecha
                 ] },
                 title &&
-                    (styles?.titleIsHtml ? (React.createElement(RenderHTML, { contentWidth: htmlWidth || contentWidth, source: { html: `<span>${title}</span>` }, baseStyle: {
+                    (styles?.titleIsHtml ? (React.createElement(RenderHTML, { contentWidth: htmlWidth || contentWidth, source: {
+                            html: `<span>${toBr(title ?? TOAST_CONFIG[type].title)}</span>`,
+                        }, baseStyle: {
                             fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
                             color: styles?.titleColor ??
                                 TOAST_CONFIG[type][toastStyle].titleColor,
@@ -146,9 +155,9 @@ animationOutDuration = 500, // Duration for the animation
                                     TOAST_CONFIG[type][toastStyle].titleColor,
                             },
                             { flexShrink: 1 }, // asegura que envuelva dentro del espacio disponible
-                        ] }, title ?? TOAST_CONFIG[type].title))),
+                        ] }, toNL(title ?? TOAST_CONFIG[type].title)))),
                 styles?.messageIsHtml ? (React.createElement(RenderHTML, { contentWidth: htmlWidth || contentWidth, source: {
-                        html: `<span>${message ?? TOAST_CONFIG[type].message}</span>`,
+                        html: `<span>${toBr(message ?? TOAST_CONFIG[type].message)}</span>`,
                     }, baseStyle: {
                         fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
                         color: styles?.textColor ?? TOAST_CONFIG[type][toastStyle].textColor,
@@ -181,7 +190,7 @@ animationOutDuration = 500, // Duration for the animation
                         },
                         !title && { fontWeight: 'bold' },
                         { flexShrink: 1 },
-                    ] }, message ?? TOAST_CONFIG[type].message))),
+                    ] }, toNL(message ?? TOAST_CONFIG[type].message)))),
             progress && (React.createElement(View, { style: toastStyles.progressContainer },
                 React.createElement(Animated.View, { style: [
                         toastStyles.progressBar,

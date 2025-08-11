@@ -7,7 +7,7 @@
 ![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20Phone-blue.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
 
-**Versión:** `v1.9.7`
+**Versión:** `v1.9.9`
 
 ## Descripción
 
@@ -37,36 +37,39 @@ Para instalar la biblioteca, ejecuta el siguiente comando:
 npm install react-native-toast-lite
 ```
 
-> Ejemplo de Uso
+2. **Recomendación de integración:**
+- Coloca el `Toaster` dentro de los márgenes seguros (top/bottom) y antes del Stack para asegurar visibilidad y evitar bloquear interacción.
+- No requiere configuración extra en móvil; en web se maneja overlay y z-index automáticamente.
 
-2. **Configurar el Toast Provider (Toaster):**
+```tsx
+import React from 'react';
+import { View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import { Stack } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Toaster } from 'react-native-toast-lite';
 
-   Asegúrate de agregar al punto de entrada de tu aplicación el `Toaster` para que los toasts se rederizen allí:
+export default function RootLayout() {
+  const insets = useSafeAreaInsets();
+  const colorScheme = 'light'; // tu lógica de tema
 
-   ```jsx
-   import React from 'react';
-   import { View, Text } from 'react-native';
-
-   import { Toaster } from 'react-native-toast-lite'; // Asegúrate de importar el componente Toaster
-
-   const App = () => (
-     <View style={{ flex: 1 }}>
-       <Toaster />{' '}
-       {/* Añade el Toaster en la parte superior de tu aplicación */}
-       <Text>Mi aplicación</Text>
-       {/* Otros componentes */}
-     </View>
-   );
-
-   export default App;
-   ```
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <View style={{ flex: 1, marginTop: insets.top, marginBottom: insets.bottom }}>
+        {/* Toaster dentro de Safe Area y antes del Stack */}
+        <Toaster />
+        <Stack screenOptions={{ headerShown: true }} />
+      </View>
+    </ThemeProvider>
+  );
+}
+```
 
 3. **Mostrar un Toast:**
 
-Utiliza los métodos toast.success, toast.error, toast.info, toast.warning, y toast.loading para mostrar toasts desde cualquier parte de tu aplicación.
-
-Estos métodos te permiten mostrar mensajes con diferentes tipos de notificaciones y configuraciones personalizables.
-A continuación se muestra un ejemplo:
+Utiliza los métodos `toast.success`, `toast.error`, `toast.info`, `toast.warning`, y `toast.loading` para mostrar toasts desde cualquier parte de tu aplicación.
 
 ```jsx
 import React from 'react';
@@ -77,15 +80,15 @@ const ExampleComponent = () => {
   const showSuccessToast = () => {
     toast.success('Operación completada con éxito.', {
       title: 'Éxito', // Título del toast (opcional)
-      position: 'top-right', // Posición del toast (opcional)
+      position: 'top-right', 
       duration: 4000, // Duración del toast en milisegundos (opcional)
       progress: true, // Muestra el indicador de progreso (opcional)
       border: true, // Muestra un borde alrededor del toast (opcional)
       styles: {
-        backgroundColor: '#28a745', // Color de fondo personalizado
+        backgroundColor: '#28a745', 
         borderColor: '#155724', // Color del borde personalizado
-        titleColor: '#fff', // Color del título personalizado
-        textColor: '#ddd', // Color del texto personalizado
+        titleColor: '#fff',
+        textColor: '#ddd', 
         progressColor: '#ffc107', // Color del indicador de progreso personalizado
       },
     });
@@ -254,5 +257,10 @@ toast.success('<b>Guardado con éxito</b>', {
 | `iconResizeMode`   | `string` _(opcional)_                            | Para controlar como se ajusta la imagen url, por defecto 'contain' |
 | `iconRounded`      | `boolean` _(opcional)_                           | círculo perfecto                                                   |
 | `iconBorderRadius` | `number` _(opcional)_                            | override manual del radio                                          |
+
+## Soporte multiplataforma (Web y Mobile)
+
+Desde esta versión, los toasts funcionan tanto en aplicaciones móviles como en la web (Expo + React Native Web), siguiendo la filosofía multiplataforma.
+
 
  <img src="https://github.com/user-attachments/assets/e0d00a53-5e7d-4a41-872d-509413e347f7" alt="NASA Image 1" width="25%" />

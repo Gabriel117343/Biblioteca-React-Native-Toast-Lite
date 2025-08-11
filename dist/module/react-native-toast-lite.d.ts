@@ -10,3 +10,5 @@ export const toast: {
   dismiss: (id: string) => void;
   loading: (message: string, props?: ToastProps['props']) => void;
 };
+export type { ToastProps } from './toastTypes';
+export type { ToastPropsStyles } from './toastTypes';

@@ -1,13 +1,18 @@
 "use strict";
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 export const toastStyles = StyleSheet.create({
   containerToast: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
+    // compatibilidad con web y mobile
+    zIndex: Platform.select({
+      web: 2147483000,
+      default: 9999
+    })
     // alignItems: 'center',
   },
   container: {
@@ -24,7 +29,11 @@ export const toastStyles = StyleSheet.create({
       height: 1
     },
     elevation: 2,
-    zIndex: 1000,
+    // z-index local para que quede por encima de hermanos
+    zIndex: Platform.select({
+      web: 2147483001,
+      default: 10
+    }),
     overflow: 'hidden'
   },
   title: {

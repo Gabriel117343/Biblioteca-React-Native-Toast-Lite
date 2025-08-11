@@ -12,6 +12,7 @@ export const Toaster = () => {
   } = useToastStore();
   // se renderiza el componente Toast con las props de cada toast
   return /*#__PURE__*/_jsx(View, {
+    pointerEvents: "box-none",
     style: [toastStyles.containerToast, StyleSheet.absoluteFillObject],
     children: toasts.map(toast => /*#__PURE__*/_jsx(Toast, {
       id: toast.props.id // ! indica a typescript que no puede ser null o undefined
