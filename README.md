@@ -7,9 +7,9 @@
 ![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Web-blue.svg?style=flat-square)
 ![Web](https://img.shields.io/badge/Web-compatible-green.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
+[ezgif-82b47038fbd8c0](https://github.com/user-attachments/assets/ac97f795-1b3f-4bd2-af6e-c3bb59c800c2)
 
 **Versión:** `v2.0.0`
-[ezgif-82b47038fbd8c0](https://github.com/user-attachments/assets/ac97f795-1b3f-4bd2-af6e-c3bb59c800c2)
 
 ## Demostración
 
