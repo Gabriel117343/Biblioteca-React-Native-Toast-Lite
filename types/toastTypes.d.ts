@@ -9,7 +9,6 @@ export type ToastPosition =
   | 'bottom-right';
 export type ToastStyle = 'primary' | 'secondary' | 'primaryDark' | 'dark';
 export type SwipeDirection = 'left' | 'right' | 'up' | 'down' | 'none';
-
 type validURL = `http://${string}` | `https://${string}`;
 
 export interface ToastPropsStyles {
@@ -31,9 +30,9 @@ export interface ToastPropsStyles {
   iconBorderRadius?: number; // override manual del radio
   progressColor?: string;
   opacity?: number;
-  width?: number | 'auto' | `${number}%` | `${number}px`;
-  maxWidth?: number | 'auto' | `${number}%` | `${number}px`;
-  minWidth?: number | 'auto' | `${number}%` | `${number}px`;
+  width?: number | 'auto' | `${number}%`;
+  maxWidth?: number | 'auto' | `${number}%`;
+  minWidth?: number | 'auto' | `${number}%`;
   height?: number;
   top?: number;
   left?: number;
