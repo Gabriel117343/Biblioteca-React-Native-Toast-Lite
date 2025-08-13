@@ -67,6 +67,7 @@ export const Toast: React.FC<ToastProps> = ({
     null
   );
   const [autoHideTriggered, setAutoHideTriggered] = useState(false);
+  const autoHideTriggeredRef = useRef(false);
   const { width: contentWidth } = useWindowDimensions();
   const [htmlWidth, setHtmlWidth] = useState<number>(0);
 
@@ -79,10 +80,12 @@ export const Toast: React.FC<ToastProps> = ({
   useEffect(() => {
     // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
     progressValue.value = 0;
+    autoHideTriggeredRef.current = false;
     // la animación se ejecuta varias veces hasta que se cumpla la duración
     progressValue.value = withTiming(115, { duration }, () => {
       // Cuando termina la animación del progreso, disparar autoHide
-      if (!autoHideTriggered) {
+      if (!autoHideTriggeredRef.current) {
+        autoHideTriggeredRef.current = true;
         setAutoHideTriggered(true);
         if (callbacks?.onAutoHide) {
           callbacks.onAutoHide();
@@ -94,15 +97,7 @@ export const Toast: React.FC<ToastProps> = ({
     return () => {
       cancelAnimation(progressValue);
     };
-  }, [
-    duration,
-    progressValue,
-    progress,
-    type,
-    id,
-    callbacks,
-    autoHideTriggered,
-  ]);
+  }, [duration, progressValue, progress, type, id, callbacks]);
 
   const animatedStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
