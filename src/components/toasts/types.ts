@@ -1,4 +1,23 @@
 type validURL = `http://${string}` | `https://${string}`;
+export type ToastPosition =
+  | 'top'
+  | 'bottom'
+  | 'center'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
+
+export type ToastStyle = 'primary' | 'secondary' | 'primaryDark' | 'dark';
+export type SwipeDirection = 'left' | 'right' | 'up' | 'down' | 'none';
+export interface ToastCallbacks {
+  onPress?: () => void;
+  onPressIn?: () => void;
+  onPressOut?: () => void;
+  onDismiss?: () => void;
+  onSwipe?: (direction: SwipeDirection) => void;
+  onAutoHide?: () => void;
+}
 
 export interface ToastPropsStyles {
   titleIsHtml?: boolean;
@@ -35,15 +54,8 @@ export interface ToastProps {
   type: 'error' | 'success' | 'info' | 'warning' | 'loading';
   title?: string;
   message?: string;
-  position?:
-    | 'top'
-    | 'bottom'
-    | 'center'
-    | 'top-left'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-right';
-  toastStyle?: 'primary' | 'secondary' | 'primaryDark' | 'dark';
+  position?: ToastPosition;
+  toastStyle?: ToastStyle;
   animationType?: 'fade' | 'slide' | 'bounce';
   animationInDuration?: number;
   animationOutDuration?: number;
@@ -53,4 +65,7 @@ export interface ToastProps {
   iconUrl?: validURL;
   border?: boolean;
   styles?: ToastPropsStyles;
+  callbacks?: ToastCallbacks;
+  pauseOnPress?: boolean; // si se pausa al mantener presionado
+  swipeable?: boolean; // si se puede deslizar para cerrar
 }

@@ -1,4 +1,14 @@
 export type ToastType = 'error' | 'success' | 'info' | 'warning' | 'loading';
+export type ToastPosition =
+  | 'top'
+  | 'bottom'
+  | 'center'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
+export type ToastStyle = 'primary' | 'secondary' | 'primaryDark' | 'dark';
+export type SwipeDirection = 'left' | 'right' | 'up' | 'down' | 'none';
 
 type validURL = `http://${string}` | `https://${string}`;
 
@@ -21,15 +31,24 @@ export interface ToastPropsStyles {
   iconBorderRadius?: number; // override manual del radio
   progressColor?: string;
   opacity?: number;
-  width?: number | 'auto' | `${number}%`;
-  maxWidth?: number | 'auto' | `${number}%`;
-  minWidth?: number | 'auto' | `${number}%`;
+  width?: number | 'auto' | `${number}%` | `${number}px`;
+  maxWidth?: number | 'auto' | `${number}%` | `${number}px`;
+  minWidth?: number | 'auto' | `${number}%` | `${number}px`;
   height?: number;
   top?: number;
   left?: number;
   right?: number;
   bottom?: number;
   zIndex?: number;
+}
+
+export interface ToastCallbacks {
+  onPress?: () => void;
+  onPressIn?: () => void;
+  onPressOut?: () => void;
+  onDismiss?: () => void;
+  onSwipe?: (direction: SwipeDirection) => void;
+  onAutoHide?: () => void;
 }
 
 export interface ToastProps {
@@ -39,15 +58,8 @@ export interface ToastProps {
     id?: string;
     title?: string;
     duration?: number;
-    position?:
-      | 'top'
-      | 'bottom'
-      | 'center'
-      | 'top-left'
-      | 'top-right'
-      | 'bottom-left'
-      | 'bottom-right';
-    toastStyle?: 'primary' | 'secondary' | 'primaryDark' | 'dark';
+    position?: ToastPosition;
+    toastStyle?: ToastStyle;
     animationType?: 'fade' | 'slide' | 'bounce';
     animationInDuration?: number;
     animationOutDuration?: number;
@@ -57,5 +69,8 @@ export interface ToastProps {
     border?: boolean;
     inheritStyles?: boolean;
     styles?: ToastPropsStyles;
+    callbacks?: ToastCallbacks;
+    pauseOnPress?: boolean; // si se pausa al mantener presionado
+    swipeable?: boolean; // si se puede deslizar para cerrar
   };
 }

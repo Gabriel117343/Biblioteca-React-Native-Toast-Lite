@@ -4,10 +4,16 @@
 ![npm](https://img.shields.io/npm/dm/react-native-toast-lite.svg?style=flat-square)
 ![License](https://img.shields.io/npm/l/react-native-toast-lite.svg?style=flat-square)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/usuario/repo/main.yml?style=flat-square)
-![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20Phone-blue.svg?style=flat-square)
+![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Web-blue.svg?style=flat-square)
+![Web](https://img.shields.io/badge/Web-compatible-green.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
 
-**Versión:** `v1.9.9`
+**Versión:** `v2.0.0`
+[ezgif-82b47038fbd8c0](https://github.com/user-attachments/assets/ac97f795-1b3f-4bd2-af6e-c3bb59c800c2)
+
+## Demostración
+
+![ezgif-82b47038fbd8c01-ezgif com-optimize](https://github.com/user-attachments/assets/f9296397-d147-44a7-8910-e95761a0fe5d)
 
 ## Descripción
 
@@ -21,6 +27,8 @@
 - **Fácil Integración**: Instala y usa en tu proyecto con facilidad.
 - **Contexto Global con Zustand**: Utiliza Zustand para manejar el estado global de los toasts.
 - **Animaciones con react-native-reanimated**: Integra animaciones suaves para una mejor experiencia de usuario.
+- **Soporte Multiplataforma**: Los toasts funcionan tanto en aplicaciones móviles como en la web, siguiendo la filosofía multiplataforma.
+
 
 ## Compatibilidad
 
@@ -38,6 +46,7 @@ npm install react-native-toast-lite
 ```
 
 2. **Recomendación de integración:**
+
 - Coloca el `Toaster` dentro de los márgenes seguros (top/bottom) y antes del Stack para asegurar visibilidad y evitar bloquear interacción.
 - No requiere configuración extra en móvil; en web se maneja overlay y z-index automáticamente.
 
@@ -45,7 +54,11 @@ npm install react-native-toast-lite
 import React from 'react';
 import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { ThemeProvider, DarkTheme, DefaultTheme } from '@react-navigation/native';
+import {
+  ThemeProvider,
+  DarkTheme,
+  DefaultTheme,
+} from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Toaster } from 'react-native-toast-lite';
@@ -57,7 +70,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-      <View style={{ flex: 1, marginTop: insets.top, marginBottom: insets.bottom }}>
+      <View
+        style={{ flex: 1, marginTop: insets.top, marginBottom: insets.bottom }}
+      >
         {/* Toaster dentro de Safe Area y antes del Stack */}
         <Toaster />
         <Stack screenOptions={{ headerShown: true }} />
@@ -80,15 +95,15 @@ const ExampleComponent = () => {
   const showSuccessToast = () => {
     toast.success('Operación completada con éxito.', {
       title: 'Éxito', // Título del toast (opcional)
-      position: 'top-right', 
+      position: 'top-right',
       duration: 4000, // Duración del toast en milisegundos (opcional)
       progress: true, // Muestra el indicador de progreso (opcional)
       border: true, // Muestra un borde alrededor del toast (opcional)
       styles: {
-        backgroundColor: '#28a745', 
+        backgroundColor: '#28a745',
         borderColor: '#155724', // Color del borde personalizado
         titleColor: '#fff',
-        textColor: '#ddd', 
+        textColor: '#ddd',
         progressColor: '#ffc107', // Color del indicador de progreso personalizado
       },
     });
@@ -107,8 +122,8 @@ const ExampleComponent = () => {
       styles: {
         backgroundColor: '#dc3545', // Color de fondo personalizado
         borderColor: '#721c24',
-        titleColor: '#fff', 
-        textColor: '#f8d7da', 
+        titleColor: '#fff',
+        textColor: '#f8d7da',
       },
     });
   };
@@ -166,8 +181,11 @@ Ejemplos:
 ```tsx
 toast.success('Guardado', {
   iconUrl: 'https://example.com/success.png',
-  iconResizeMode: 'cover',
-  iconRounded: true,
+  styles: {
+    iconRounded: true,
+    iconSize: 35,
+    iconResizeMode: 'cover',
+  },
 });
 // o
 toast.success('Ok', { icon: '✅' });
@@ -258,9 +276,44 @@ toast.success('<b>Guardado con éxito</b>', {
 | `iconRounded`      | `boolean` _(opcional)_                           | círculo perfecto                                                   |
 | `iconBorderRadius` | `number` _(opcional)_                            | override manual del radio                                          |
 
-## Soporte multiplataforma (Web y Mobile)
+## Callbacks y Eventos Interactivos 🎮
 
-Desde esta versión, los toasts funcionan tanto en aplicaciones móviles como en la web (Expo + React Native Web), siguiendo la filosofía multiplataforma.
+Los toast pueden responder a interacciones del usuario mediante callbacks, permitiendo ejecutar código cuando ocurren eventos específicos.
+
+### Callbacks disponibles
+
+| **Callback** | **Descripción**                                                                 |
+| ------------ | ------------------------------------------------------------------------------- |
+| `onPress`    | Se ejecuta cuando el usuario presiona el toast                                  |
+| `onPressIn`  | Se ejecuta cuando comienza el presionado                                        |
+| `onPressOut` | Se ejecuta cuando termina el presionado                                         |
+| `onSwipe`    | Se ejecuta cuando el usuario desliza el toast (incluye la dirección)            |
+| `onDismiss`  | Se ejecuta cuando el toast se cierra por cualquier motivo                       |
+| `onAutoHide` | Se ejecuta específicamente cuando el toast se cierra automáticamente por tiempo |
+
+### Opciones de interacción
+
+| **Propiedad**  | **Tipo**  | **Descripción**                                                        |
+| -------------- | --------- | ---------------------------------------------------------------------- |
+| `pauseOnPress` | `boolean` | Si `true`, el toast pausa su temporizador mientras está presionado     |
+| `swipeable`    | `boolean` | Si `true`, el toast puede cerrarse deslizándolo en cualquier dirección |
+
+### Ejemplo de uso con callbacks
+
+```javascript
+toast.success('Operación completada', {
+  title: '¡Éxito!',
+  duration: 5000,
+  callbacks: {
+    onPress: () => console.log('Toast presionado'),
+    onSwipe: (direction) => console.log(`Deslizado hacia: ${direction}`),
+    onDismiss: () => console.log('Toast cerrado'),
+  },
+  pauseOnPress: true, // Pausa el temporizador al mantener presionado
+  swipeable: true, // Permite cerrar deslizando en cualquier dirección
+});
+```
+
+Estos callbacks te permiten crear experiencias interactivas, como navegación al presionar un toast, análisis de interacción del usuario, o acciones de recuperación cuando se descarta una notificación.
 
 
- <img src="https://github.com/user-attachments/assets/e0d00a53-5e7d-4a41-872d-509413e347f7" alt="NASA Image 1" width="25%" />

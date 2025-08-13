@@ -105,7 +105,10 @@ export const Toast = ({
     exiting: handleAnimation('exiting'),
     style: [toastStyles.container, positionStyles[position ?? 'top'], {
       borderWidth: border ? 1 : 0,
-      width: styles?.width ?? '90%',
+      // ya sea para web o mobile
+      width: styles?.width !== undefined ? styles.width : Platform.OS === 'web' ? 400 : '90%',
+      maxWidth: styles?.maxWidth,
+      minWidth: styles?.minWidth,
       minHeight: styles?.height ?? 60,
       borderColor: styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor,
       borderRadius: styles?.borderRadius ?? 15,
