@@ -48,11 +48,13 @@ export interface ToastCallbacks {
   onDismiss?: () => void;
   onSwipe?: (direction: SwipeDirection) => void;
   onAutoHide?: () => void;
+  onLinkPress?: (href: string) => void;
 }
 
 export interface ToastProps {
   type: ToastType;
   message: string;
+  createdAt: number;
   props?: {
     id?: string;
     title?: string;
@@ -73,3 +75,83 @@ export interface ToastProps {
     swipeable?: boolean; // si se puede deslizar para cerrar
   };
 }
+export type ToastItem = {
+  id: string;
+  type: ToastType;
+  message: string;
+  createdAt: number;
+  props: Required<NonNullable<ToastProps['props']>>; // props ya normalizadas
+};
+
+export interface NormalizedToastProps {
+  id: string;
+  title: string;
+  duration: number;
+  position: ToastPosition;
+  toastStyle: ToastStyle;
+  animationType: 'fade' | 'slide' | 'bounce';
+  animationInDuration: number;
+  animationOutDuration: number;
+  progress: boolean;
+  icon: string;
+  iconUrl?: validURL;
+  border: boolean;
+  inheritStyles: boolean;
+  styles: ToastPropsStyles;
+  callbacks: ToastCallbacks;
+  pauseOnPress: boolean;
+  swipeable: boolean;
+}
+
+export type ToastUpdatePatch = {
+  id: string; // obligatorio
+  message?: string;
+  title?: string;
+  toastStyle?: ToastStyle;
+  animationOutDuration?: number;
+  icon?: string;
+  iconUrl?: validURL;
+  border?: boolean;
+  styles?: ToastPropsStyles; // override parcial, merge con existentes
+  pauseOnPress?: boolean;
+  swipeable?: boolean;
+  position?: ToastPosition; // opcional: por si querés moverlo
+  type?: ToastType;
+  duration?: number;
+  config: ToastUpdateOptions;
+};
+
+/**
+ * Opciones de update:
+ * - preserveProgress: true → NO reinicia el timer (default).
+ * - inheritDuration: true → conserva la duración previa al reiniciar.
+ *   (sólo aplica si preserveProgress=false)
+ * - nextDuration: número → si querés setear una nueva duración al reiniciar.
+ */
+export type ToastUpdateOptions = {
+  preserveProgress?: boolean; // default true
+  inheritDuration?: boolean; // default true (cuando preserveProgress=false)
+  nextDuration?: number; // override explícito de duración al reiniciar
+};
+
+export type ToasterProps = {
+  /** Usa insets del SO; default true */
+  respectSafeArea?: boolean;
+  /** Offsets extra para sumar/restar a los safe areas */
+  extraOffsets?: Partial<{
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  }>;
+  /** Si tu app NO usa SafeAreaProvider, provee insets manualmente */
+  providedInsets?: { top: number; bottom: number; left: number; right: number };
+  /** Muestra un borde visual para depuración del área del Toaster */
+  showDebugBorder?: boolean;
+  /** Configuración del borde de depuración */
+  debugBorderOptions?: {
+    color?: string;
+    width?: number;
+    style?: 'solid' | 'dotted' | 'dashed';
+  };
+};

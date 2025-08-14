@@ -9,17 +9,15 @@ export const toastStyles = StyleSheet.create({
     right: 0,
     bottom: 0,
     // compatibilidad con web y mobile
+    // sin padding: los offsets seguros los aplica el Toaster
     zIndex: Platform.select({
       web: 2147483000,
       default: 9999
     })
-    // alignItems: 'center',
   },
   container: {
     position: 'absolute',
     borderWidth: 1,
-    marginHorizontal: 8,
-    marginVertical: 8,
     flexDirection: 'column',
     shadowColor: 'black',
     shadowOpacity: 0.4,
@@ -47,6 +45,7 @@ export const toastStyles = StyleSheet.create({
   },
   contentContainer: {
     width: '100%',
+    height: '100%',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start',
@@ -70,31 +69,25 @@ export const toastStyles = StyleSheet.create({
 });
 export const positionStyles = StyleSheet.create({
   top: {
-    top: 10,
     alignSelf: 'center'
   },
   bottom: {
-    bottom: 10,
     alignSelf: 'center'
   },
   center: {
-    top: '50%',
     alignSelf: 'center'
   },
+  // el vertical lo hace centerFix
   'top-left': {
-    top: 10,
     left: 10
   },
   'top-right': {
-    top: 10,
     right: 10
   },
   'bottom-left': {
-    bottom: 10,
     left: 10
   },
   'bottom-right': {
-    bottom: 10,
     right: 10
   }
 });

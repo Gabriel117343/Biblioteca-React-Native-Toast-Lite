@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     // no se generan archivos .d.ts automáticamente al compilar el proyecto con tsc
-    "declaration": false, 
+    "declaration": true,
+    "noEmit": false, // no emitir JavaScript al compilar
     "target": "ESNext",
     "module": "ESNext",
     "strict": true,
@@ -11,15 +12,17 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "baseUrl": "./",
+    "emitDeclarationOnly": true, // Solo emitir archivos .d.ts
+    "composite": true,
     "paths": {
       "@store/*": ["src/store/*"],
-      "*": ["types/*"],
+      "*": ["types/*"]
     },
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "outDir": "./dist", // Directorio de salida
-    "rootDir": "./src", // Directorio raíz
+    "outDir": "./dist/module", // Alinear con la salida de bob
+    "rootDir": "./src" // Directorio raíz
   },
   "include": ["types/**/*.d.ts", "src/**/*"],
   "exclude": ["node_modules", "dist"]

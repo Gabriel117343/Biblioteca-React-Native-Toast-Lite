@@ -7,8 +7,9 @@
 ![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Web-blue.svg?style=flat-square)
 ![Web](https://img.shields.io/badge/Web-compatible-green.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
+![Stable Version](https://img.shields.io/badge/Stable%20Version-%E2%89%A5v2.0.4-brightgreen.svg?style=flat-square)
 
-**Versión:** `v2.0.0`
+**Versión:** `v2.0.4`
 
 ## Demostración
 
@@ -16,7 +17,7 @@
 
 ## Descripción
 
-**react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones React Native. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación. La biblioteca incluye soporte para varios tipos de mensajes, como errores y éxitos, con una personalización sencilla para adaptarse al diseño de tu aplicación.
+**react-native-toast-lite** es una biblioteca de notificaciones `Toast` para aplicaciones **React Native**. Proporciona una manera fácil y configurable de mostrar mensajes breves y no intrusivos en tu aplicación.
 
 ## Características
 
@@ -26,8 +27,7 @@
 - **Fácil Integración**: Instala y usa en tu proyecto con facilidad.
 - **Contexto Global con Zustand**: Utiliza Zustand para manejar el estado global de los toasts.
 - **Animaciones con react-native-reanimated**: Integra animaciones suaves para una mejor experiencia de usuario.
-- **Soporte Multiplataforma**: Los toasts funcionan tanto en aplicaciones móviles como en la web, siguiendo la filosofía multiplataforma.
-
+- **Soporte Multiplataforma**: Los toasts funcionan tanto en **aplicaciones móviles** como en la **web**, siguiendo la filosofía multiplataforma.
 
 ## Compatibilidad
 
@@ -72,10 +72,23 @@ export default function RootLayout() {
       <View
         style={{ flex: 1, marginTop: insets.top, marginBottom: insets.bottom }}
       >
-        {/* Toaster dentro de Safe Area y antes del Stack */}
-        <Toaster />
+        {/* Toaster dentro de Safe Area y antes del Stack  */}
+        <Toaster
+          respectSafeArea={false}
+          showDebugBorder
+          debugBorderOptions={{
+            color: '#00FF00',
+            width: 2,
+            style: 'dotted',
+          }}
+        />
         <Stack screenOptions={{ headerShown: true }} />
       </View>
+      {/* App sin SafeAreaProvider */}
+      {/* <Toaster providedInsets={{ top: 24, bottom: 0, left: 0, right: 0 }} /> */}
+
+      {/* App que quiere “levantar” un poco más los toasts de abajo: */}
+      {/* <Toaster extraOffsets={{ bottom: 8 }} /> */}
     </ThemeProvider>
   );
 }
@@ -83,7 +96,7 @@ export default function RootLayout() {
 
 3. **Mostrar un Toast:**
 
-Utiliza los métodos `toast.success`, `toast.error`, `toast.info`, `toast.warning`, y `toast.loading` para mostrar toasts desde cualquier parte de tu aplicación.
+Utiliza los métodos `toast.success`, `toast.error`, `toast.info`, `toast.warning`, y `toast.loading`, `toast.dismiss`, `toast.update` para mostrar toasts desde cualquier parte de tu aplicación.
 
 ```jsx
 import React from 'react';
@@ -94,6 +107,7 @@ const ExampleComponent = () => {
   const showSuccessToast = () => {
     toast.success('Operación completada con éxito.', {
       title: 'Éxito', // Título del toast (opcional)
+      id: 'my-id-22', // opcional pero recomendado
       position: 'top-right',
       duration: 4000, // Duración del toast en milisegundos (opcional)
       progress: true, // Muestra el indicador de progreso (opcional)
@@ -180,14 +194,18 @@ Ejemplos:
 ```tsx
 toast.success('Guardado', {
   iconUrl: 'https://example.com/success.png',
+  'web-image',
   styles: {
     iconRounded: true,
     iconSize: 35,
     iconResizeMode: 'cover',
   },
 });
+toast.update({ id: 'web-image', styles: { iconSize: 30 }, message: '..'  }) // hereda propiedades y permite override
+toast.dismiss('web-image') // elimina antes de timepo
 // o
 toast.success('Ok', { icon: '✅' });
+
 // o usar el icono svg por defecto
 ```
 
@@ -281,14 +299,15 @@ Los toast pueden responder a interacciones del usuario mediante callbacks, permi
 
 ### Callbacks disponibles
 
-| **Callback** | **Descripción**                                                                 |
-| ------------ | ------------------------------------------------------------------------------- |
-| `onPress`    | Se ejecuta cuando el usuario presiona el toast                                  |
-| `onPressIn`  | Se ejecuta cuando comienza el presionado                                        |
-| `onPressOut` | Se ejecuta cuando termina el presionado                                         |
-| `onSwipe`    | Se ejecuta cuando el usuario desliza el toast (incluye la dirección)            |
-| `onDismiss`  | Se ejecuta cuando el toast se cierra por cualquier motivo                       |
-| `onAutoHide` | Se ejecuta específicamente cuando el toast se cierra automáticamente por tiempo |
+| **Callback**  | **Descripción**                                                                             |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| `onPress`     | Se ejecuta cuando el usuario presiona el toast                                              |
+| `onPressIn`   | Se ejecuta cuando comienza el presionado                                                    |
+| `onPressOut`  | Se ejecuta cuando termina el presionado                                                     |
+| `onSwipe`     | Se ejecuta cuando el usuario desliza el toast (incluye la dirección)                        |
+| `onDismiss`   | Se ejecuta cuando el toast se cierra por cualquier motivo                                   |
+| `onAutoHide`  | Se ejecuta específicamente cuando el toast se cierra automáticamente por tiempo             |
+| `onLinkPress` | Se ejecuta específicamente cuando se paso un enlace de html <a>https://..</a> y se presiono |
 
 ### Opciones de interacción
 
@@ -311,8 +330,14 @@ toast.success('Operación completada', {
   pauseOnPress: true, // Pausa el temporizador al mantener presionado
   swipeable: true, // Permite cerrar deslizando en cualquier dirección
 });
+toast.info('Visita nuestra <a href="https://example.com">página web</a>', {
+  title: '<nombrComercio>'
+  styles: { messageIsHtml: true, titleIsHtml: false },
+  callbacks: {
+    onPress: () => console.log('Toast presionado'),
+    onLinkPress: (url) => console.log(`Enlace presionado: ${url}`),
+  },
+});
 ```
 
 Estos callbacks te permiten crear experiencias interactivas, como navegación al presionar un toast, análisis de interacción del usuario, o acciones de recuperación cuando se descarta una notificación.
-
-

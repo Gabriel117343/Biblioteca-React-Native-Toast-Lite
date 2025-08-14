@@ -1,8 +1,9 @@
 "use strict";
 
-import React, { useEffect, useRef, useState } from 'react';
+// Toast.tsx (final)
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, PanResponder, useWindowDimensions, Linking, Platform, Pressable } from 'react-native';
-import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, FadeOutUp, FadeOutDown, useSharedValue, useAnimatedStyle, withTiming, interpolate, SlideInLeft, SlideOutRight, SlideOutLeft, SlideOutUp, SlideOutDown, BounceIn, BounceOut, cancelAnimation } from 'react-native-reanimated';
+import Animated, { FadeInUp, FadeOutLeft, FadeOutRight, useSharedValue, useAnimatedStyle, withTiming, interpolate, SlideInLeft, SlideOutRight, SlideOutLeft, BounceIn, BounceOut, cancelAnimation, runOnJS } from 'react-native-reanimated';
 import RenderHTML from 'react-native-render-html';
 import { toastStyles, positionStyles } from "./commonStyles.js";
 import { TOAST_CONFIG } from "./toastConfig.js";
@@ -10,150 +11,231 @@ import { toast } from "../../store/storeToast.js";
 import { RenderIcon } from "./RenderIcon.js";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 export const Toast = ({
-  id,
-  type,
-  title,
   message,
-  position,
-  toastStyle = 'primary',
-  icon,
-  iconUrl,
-  duration = 3000,
-  // 3000 ms por defecto
-  progress = true,
-  border = true,
-  styles,
-  // objeto de estilos personalizados
-  animationType = 'fade',
-  animationInDuration = 500,
-  animationOutDuration = 500,
-  callbacks,
-  // Nuevos callbacks para eventos
-  pauseOnPress = true,
-  // Si se pausa al presionar
-  swipeable = true // Si se puede deslizar para cerrar
+  type,
+  props,
+  createdAt
 }) => {
+  const {
+    animationInDuration,
+    animationOutDuration,
+    animationType,
+    border,
+    callbacks,
+    duration,
+    icon,
+    id,
+    pauseOnPress,
+    position,
+    progress,
+    styles,
+    swipeable,
+    title,
+    toastStyle,
+    iconUrl
+  } = props;
+
+  // ---- progreso / anim ----
   const progressValue = useSharedValue(0);
+  const pressedSV = useSharedValue(false);
+
+  // flags/work safe
+  const dismissedSV = useSharedValue(0);
+  const autoHideSV = useSharedValue(0);
+  const runIdSV = useSharedValue(0);
+  const latestCreatedAtSV = useSharedValue(createdAt);
+  const isSwipingRef = useRef(false);
   const [defaultAnimation, setDefaultAnimation] = useState(animationType);
   const [swipeDirection, setSwipeDirection] = useState('none');
   const [progressAnimation, setProgressAnimation] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  const [remainingDuration, setRemainingDuration] = useState(null);
-  const [autoHideTriggered, setAutoHideTriggered] = useState(false);
+  const [linkPressed, setLinkPressed] = useState(false);
+  const [htmlWidth, setHtmlWidth] = useState(0);
+  const [selfH, setSelfH] = useState(0);
   const {
     width: contentWidth
   } = useWindowDimensions();
-  const [htmlWidth, setHtmlWidth] = useState(0);
+  const progressRef = useRef(null);
+  const pressPauseTimeoutRef = useRef(null);
+  const pressedEverPausedRef = useRef(false);
 
-  // Detecta si hay enlaces en el contenido HTML
-  const hasHtmlLinks = styles?.messageIsHtml && /<a\s+[^>]*href=|<a>/i.test(message ?? '') || styles?.titleIsHtml && title && /<a\s+[^>]*href=|<a>/i.test(title) || false;
+  // fallback JS por si el callback de la anim no corre
+  const jsKillTimerRef = useRef(null);
+  const clearJsTimer = () => {
+    if (jsKillTimerRef.current) {
+      clearTimeout(jsKillTimerRef.current);
+      jsKillTimerRef.current = null;
+    }
+  };
   useEffect(() => {
-    // Reiniciar el progressValue cuando cambie el type y animarlo nuevamente
+    latestCreatedAtSV.value = createdAt;
+  }, [createdAt, latestCreatedAtSV]);
+
+  // ---- cierre robusto ----
+  const closeToast = useCallback(() => {
+    'worklet';
+
+    if (dismissedSV.value === 1) return;
+    dismissedSV.value = 1;
+    autoHideSV.value = 1;
+    cancelAnimation(progressValue);
+    runOnJS(clearJsTimer)(); // limpia fallback
+
+    if (callbacks?.onDismiss) runOnJS(callbacks.onDismiss)();
+    runOnJS(toast.dismissInstance)(id, latestCreatedAtSV.value);
+  }, [callbacks, id, progressValue, dismissedSV, autoHideSV, latestCreatedAtSV]);
+
+  // ---- reanudar progreso ----
+  const resumeProgressSafe = () => {
+    cancelAnimation(progressValue);
+    const current = progressValue.value; // 0..115
+    const remaining = Math.max(0, duration * (1 - current / 115));
+    progressValue.value = withTiming(115, {
+      duration: remaining
+    }, () => {
+      if (autoHideSV.value === 1) return;
+      autoHideSV.value = 1;
+      if (callbacks?.onAutoHide) runOnJS(callbacks.onAutoHide)();
+      closeToast();
+    });
+    if (progressRef.current?.setNativeProps) {
+      progressRef.current.setNativeProps({
+        style: {
+          opacity: 1
+        }
+      });
+    }
+  };
+
+  // ---- reset + arranque progreso + fallback ----
+  useEffect(() => {
+    runIdSV.value = runIdSV.value + 1;
+    const myRunId = runIdSV.value;
+    dismissedSV.value = 0;
+    autoHideSV.value = 0;
+    cancelAnimation(progressValue);
     progressValue.value = 0;
-    // la animación se ejecuta varias veces hasta que se cumpla la duración
+    clearJsTimer();
+    setSwipeDirection('none');
+    setProgressAnimation(false);
+    setIsPressed(false);
+    setLinkPressed(false);
     progressValue.value = withTiming(115, {
       duration
     }, () => {
-      // Cuando termina la animación del progreso, disparar autoHide
-      if (!autoHideTriggered) {
-        setAutoHideTriggered(true);
-        if (callbacks?.onAutoHide) {
-          callbacks.onAutoHide();
-        }
-        toast.dismiss(id);
-      }
+      if (myRunId !== runIdSV.value) return;
+      if (autoHideSV.value === 1) return;
+      autoHideSV.value = 1;
+      if (callbacks?.onAutoHide) runOnJS(callbacks.onAutoHide)();
+      closeToast();
     });
+    jsKillTimerRef.current = setTimeout(() => {
+      if (dismissedSV.value === 1) return;
+      closeToast();
+    }, Math.max(0, duration + 80));
     return () => {
       cancelAnimation(progressValue);
+      clearJsTimer();
     };
-  }, [duration, progressValue, progress, type, id, callbacks, autoHideTriggered]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createdAt, duration]);
+
+  // ---- barra de progreso ----
   const animatedStyle = useAnimatedStyle(() => {
     const opacity = interpolate(progressValue.value, [0, 50, 100], [0.6, 0.6, 1]);
     return {
       width: `${progressValue.value}%`,
-      opacity: opacity
+      opacity
     };
   });
 
-  // Funciones para pausar/reanudar la animación
-  const pauseProgress = () => {
-    if (!progress || !pauseOnPress) return;
-    cancelAnimation(progressValue);
-    const currentProgress = progressValue.value;
-    const elapsedPercentage = currentProgress / 115;
-    const remainingTime = duration * (1 - elapsedPercentage);
-    setRemainingDuration(remainingTime);
-  };
-  const resumeProgress = () => {
-    if (!progress || !pauseOnPress || remainingDuration === null) return;
-    progressValue.value = withTiming(115, {
-      duration: remainingDuration
-    }, () => {
-      if (!autoHideTriggered) {
-        setAutoHideTriggered(true);
-        if (callbacks?.onAutoHide) {
-          callbacks.onAutoHide();
-        }
-        toast.dismiss(id);
-      }
-    });
-    setRemainingDuration(null);
-  };
-
-  // Definir el gesto de deslizar para cerrar el toast
+  // ---- swipe HORIZONTAL (izq/der) ----
   const panResponder = useRef(PanResponder.create({
-    onStartShouldSetPanResponder: () => swipeable,
-    onMoveShouldSetPanResponder: () => swipeable,
-    onPanResponderMove: (evt, gestureState) => {
-      if (!swipeable) return;
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponder: (_, {
+      dx,
+      dy
+    }) => Boolean(swipeable && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)),
+    onPanResponderGrant: () => {
+      if (pressPauseTimeoutRef.current) {
+        clearTimeout(pressPauseTimeoutRef.current);
+        pressPauseTimeoutRef.current = null;
+      }
+      if (isPressed) {
+        setIsPressed(false);
+        pressedSV.value = false;
+        if (pauseOnPress && pressedEverPausedRef.current) {
+          resumeProgressSafe();
+        }
+      }
+      isSwipingRef.current = false;
+    },
+    onPanResponderMove: (_, {
+      dx,
+      dy
+    }) => {
+      if (!swipeable || dismissedSV.value === 1) return;
+      if (Math.abs(dx) <= Math.abs(dy)) return;
       setDefaultAnimation('fade');
       setProgressAnimation(true);
-      const {
-        dx,
-        dy
-      } = gestureState;
-      const isHorizontal = Math.abs(dx) > Math.abs(dy);
+      isSwipingRef.current = true;
       const threshold = 50;
-
-      // Detectar dirección de deslizamiento
-      if (isHorizontal) {
-        if (dx > threshold) {
+      if (dx > threshold) {
+        if (swipeDirection !== 'right') {
           setSwipeDirection('right');
-          if (callbacks?.onSwipe) callbacks.onSwipe('right');
-          setTimeout(() => {
-            if (callbacks?.onDismiss) callbacks.onDismiss();
-            toast.dismiss(id);
-          }, 100);
-        } else if (dx < -threshold) {
+          // Primero notificamos la dirección
+          if (callbacks?.onSwipe) {
+            runOnJS(callbacks.onSwipe)('right');
+            // Cerramos después de un pequeño retraso
+            setTimeout(() => {
+              if (dismissedSV.value !== 1) {
+                closeToast();
+              }
+            }, 100);
+            return; // Importante para evitar el closeToast inmediato
+          }
+        }
+        closeToast(); // cerrar ya
+      } else if (dx < -threshold) {
+        if (swipeDirection !== 'left') {
           setSwipeDirection('left');
-          if (callbacks?.onSwipe) callbacks.onSwipe('left');
-          setTimeout(() => {
-            if (callbacks?.onDismiss) callbacks.onDismiss();
-            toast.dismiss(id);
-          }, 100);
+          // Primero notificamos la dirección
+          if (callbacks?.onSwipe) {
+            runOnJS(callbacks.onSwipe)('left');
+            // Cerramos después de un pequeño retraso
+            setTimeout(() => {
+              if (dismissedSV.value !== 1) {
+                closeToast();
+              }
+            }, 100);
+            return; // Importante para evitar el closeToast inmediato
+          }
         }
+        closeToast(); // cerrar ya
       } else {
-        if (dy > threshold) {
-          setSwipeDirection('down');
-          if (callbacks?.onSwipe) callbacks.onSwipe('down');
-          setTimeout(() => {
-            if (callbacks?.onDismiss) callbacks.onDismiss();
-            toast.dismiss(id);
-          }, 100);
-        } else if (dy < -threshold) {
-          setSwipeDirection('up');
-          if (callbacks?.onSwipe) callbacks.onSwipe('up');
-          setTimeout(() => {
-            if (callbacks?.onDismiss) callbacks.onDismiss();
-            toast.dismiss(id);
-          }, 100);
-        }
+        if (swipeDirection !== 'none') setSwipeDirection('none');
       }
-    }
+    },
+    onPanResponderRelease: () => {
+      if (dismissedSV.value !== 1 && pauseOnPress && pressedEverPausedRef.current) {
+        resumeProgressSafe();
+      }
+      isSwipingRef.current = false;
+      setSwipeDirection('none');
+    },
+    onPanResponderTerminate: () => {
+      if (dismissedSV.value !== 1 && pauseOnPress && pressedEverPausedRef.current) {
+        resumeProgressSafe();
+      }
+      isSwipingRef.current = false;
+      setSwipeDirection('none');
+    },
+    onPanResponderTerminationRequest: () => true
   })).current;
-  const handleAnimation = type => {
-    if (type === 'entering') {
-      // Animación de entrada
+
+  // ---- animaciones de entrada/salida ----
+  const handleAnimation = phase => {
+    if (phase === 'entering') {
       switch (defaultAnimation) {
         case 'slide':
           return SlideInLeft.duration(animationInDuration);
@@ -163,110 +245,172 @@ export const Toast = ({
           return FadeInUp.duration(animationInDuration);
       }
     } else {
-      // Animación de salida según dirección de swipe
-      if (progressAnimation) {
-        switch (swipeDirection) {
-          case 'left':
-            return defaultAnimation === 'slide' ? SlideOutLeft.duration(animationOutDuration) : FadeOutLeft.duration(animationOutDuration);
-          case 'right':
-            return defaultAnimation === 'slide' ? SlideOutRight.duration(animationOutDuration) : FadeOutRight.duration(animationOutDuration);
-          case 'up':
-            return defaultAnimation === 'slide' ? SlideOutUp.duration(animationOutDuration) : FadeOutUp.duration(animationOutDuration);
-          case 'down':
-            return defaultAnimation === 'slide' ? SlideOutDown.duration(animationOutDuration) : FadeOutDown.duration(animationOutDuration);
-          default:
-            return FadeOutLeft.duration(animationOutDuration);
-        }
-      } else {
-        // Animación de salida por tiempo o dismiss manual
-        switch (defaultAnimation) {
-          case 'slide':
-            return SlideOutRight.duration(animationOutDuration);
-          case 'bounce':
-            return BounceOut.duration(animationOutDuration);
-          default:
-            return FadeOutLeft.duration(animationOutDuration);
-        }
+      if (progressAnimation && (swipeDirection === 'left' || swipeDirection === 'right')) {
+        return swipeDirection === 'left' ? defaultAnimation === 'slide' ? SlideOutLeft.duration(animationOutDuration) : FadeOutLeft.duration(animationOutDuration) : defaultAnimation === 'slide' ? SlideOutRight.duration(animationOutDuration) : FadeOutRight.duration(animationOutDuration);
+      }
+      switch (defaultAnimation) {
+        case 'slide':
+          return SlideOutRight.duration(animationOutDuration);
+        case 'bounce':
+          return BounceOut.duration(animationOutDuration);
+        default:
+          return FadeOutLeft.duration(animationOutDuration);
       }
     }
   };
 
-  // Normaliza saltos de línea
+  // ---- helpers texto/layout ----
   const toBr = s => (s ?? '').replace(/\r\n|\r|\n|\\n/g, '<br/>');
   const toNL = s => (s ?? '').replace(/\\n/g, '\n');
-
-  // Resuelve el ancho según plataforma
   const resolveWidth = widthToResolve => {
     const w = widthToResolve;
-    if (w === undefined || w === 'auto') {
-      return Platform.OS === 'web' ? 400 : '90%';
-    }
+    if (w === undefined || w === 'auto') return Platform.OS === 'web' ? 400 : '90%';
     return w;
   };
 
-  // Manejo de interacción con prensa
+  // ---- RenderHTML ----
+  const memoizedTagsStyles = React.useMemo(() => ({
+    b: {
+      fontWeight: 'bold'
+    },
+    strong: {
+      fontWeight: 'bold'
+    },
+    i: {
+      fontStyle: 'italic'
+    },
+    em: {
+      fontStyle: 'italic'
+    },
+    u: {
+      textDecorationLine: 'underline'
+    },
+    a: {
+      color: styles?.linkColor ?? '#2E7DFF',
+      textDecorationLine: 'underline',
+      fontWeight: '500'
+    },
+    li: {
+      marginBottom: 2
+    }
+  }), [styles?.linkColor]);
+  const memoizedRenderersProps = React.useMemo(() => ({
+    a: {
+      // @ts-expect-error tipado RenderHTML
+      onPress: (_, href) => {
+        setLinkPressed(true);
+        setTimeout(() => {
+          if (callbacks?.onLinkPress) callbacks.onLinkPress(href ?? '');
+          if (href) Linking.openURL(href).catch(() => {});
+          setTimeout(() => setLinkPressed(false), 300);
+        }, 10);
+      }
+    }
+  }), [callbacks]);
+
+  // ---- tap/press ----
   const handlePressIn = () => {
-    if (hasHtmlLinks) return; // No interferir con links HTML
     setIsPressed(true);
-    if (pauseOnPress) pauseProgress();
+    pressedSV.value = true;
+    if (pauseOnPress && progress) {
+      pressedEverPausedRef.current = false;
+      if (pressPauseTimeoutRef.current) {
+        clearTimeout(pressPauseTimeoutRef.current);
+      }
+      pressPauseTimeoutRef.current = setTimeout(() => {
+        cancelAnimation(progressValue);
+        if (progressRef.current?.setNativeProps) {
+          progressRef.current.setNativeProps({
+            style: {
+              opacity: 0.6
+            }
+          });
+        }
+        pressedEverPausedRef.current = true;
+      }, 120);
+    }
     if (callbacks?.onPressIn) callbacks.onPressIn();
   };
   const handlePressOut = () => {
-    if (hasHtmlLinks) return;
     setIsPressed(false);
-    if (pauseOnPress) resumeProgress();
+    pressedSV.value = false;
+    if (pressPauseTimeoutRef.current) {
+      clearTimeout(pressPauseTimeoutRef.current);
+      pressPauseTimeoutRef.current = null;
+    }
+    if (pauseOnPress && pressedEverPausedRef.current) {
+      resumeProgressSafe();
+    }
     if (callbacks?.onPressOut) callbacks.onPressOut();
   };
   const handlePress = () => {
-    if (hasHtmlLinks) return;
     if (callbacks?.onPress) callbacks.onPress();
   };
-  return /*#__PURE__*/_jsx(Pressable, {
-    onPressIn: handlePressIn,
-    onPressOut: handlePressOut,
-    onPress: handlePress,
-    disabled: hasHtmlLinks,
-    children: /*#__PURE__*/_jsxs(Animated.View, {
-      entering: Platform.OS === 'web' ? undefined : handleAnimation('entering'),
-      exiting: Platform.OS === 'web' ? undefined : handleAnimation('exiting'),
-      style: [toastStyles.container, positionStyles[position ?? 'top'], {
-        borderWidth: border ? 1 : 0,
-        width: resolveWidth(styles?.width),
-        ...(styles?.maxWidth !== undefined && {
-          maxWidth: styles.maxWidth
-        }),
-        ...(styles?.minWidth !== undefined && {
-          minWidth: styles.minWidth
-        }),
-        minHeight: styles?.height ?? 60,
-        borderColor: styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor,
-        borderRadius: styles?.borderRadius ?? 15,
-        zIndex: styles?.zIndex ?? (Platform.OS === 'web' ? 2147483001 : 10),
-        ...(styles?.top !== undefined && {
-          top: styles.top
-        }),
-        ...(styles?.bottom !== undefined && {
-          bottom: styles.bottom
-        }),
-        ...(styles?.left !== undefined && {
-          left: styles.left
-        }),
-        ...(styles?.right !== undefined && {
-          right: styles.right
-        }),
-        // Efectos visuales al presionar
-        transform: isPressed ? [{
-          scale: 0.98
-        }] : undefined,
-        elevation: isPressed ? 3 : 1
-      }],
+
+  // Posicionamiento: el Toaster ya aplica padding (safe areas), aquí solo offsets locales
+  const centerFix = position === 'center' ? {
+    top: '50%',
+    alignSelf: 'center',
+    transform: [{
+      translateY: -selfH / 2
+    }]
+  } : undefined;
+  const basePosStyle = positionStyles[position ?? 'top'];
+  const anchorFix = position?.startsWith('top') ? {
+    top: styles?.top ?? 10
+  } : position?.startsWith('bottom') ? {
+    bottom: styles?.bottom ?? 10
+  } : undefined;
+
+  // offsets explícitos del usuario (solo si están definidos)
+  const userOffsets = {
+    ...(styles?.top !== undefined ? {
+      top: styles.top
+    } : null),
+    ...(styles?.bottom !== undefined ? {
+      bottom: styles.bottom
+    } : null),
+    ...(styles?.left !== undefined ? {
+      left: styles.left
+    } : null),
+    ...(styles?.right !== undefined ? {
+      right: styles.right
+    } : null)
+  };
+  return /*#__PURE__*/_jsx(Animated.View, {
+    onLayout: e => setSelfH(e.nativeEvent.layout.height),
+    entering: Platform.OS === 'web' ? undefined : handleAnimation('entering'),
+    exiting: Platform.OS === 'web' ? undefined : handleAnimation('exiting'),
+    style: [toastStyles.container, basePosStyle, anchorFix, centerFix, userOffsets, {
+      borderWidth: border ? 1 : 0,
+      width: resolveWidth(styles?.width),
+      ...(styles?.maxWidth !== undefined && {
+        maxWidth: styles.maxWidth
+      }),
+      ...(styles?.minWidth !== undefined && {
+        minWidth: styles.minWidth
+      }),
+      minHeight: styles?.height ?? 58,
+      borderColor: styles?.borderColor ?? TOAST_CONFIG[type][toastStyle].borderColor,
+      borderRadius: styles?.borderRadius ?? 15,
+      zIndex: styles?.zIndex ?? (Platform.OS === 'web' ? 2147483001 : 10)
+    }],
+    children: /*#__PURE__*/_jsxs(Pressable, {
+      onPressIn: handlePressIn,
+      onPressOut: handlePressOut,
+      onPress: () => {
+        if (!linkPressed) handlePress();
+      },
+      hitSlop: 8,
       ...(swipeable ? panResponder.panHandlers : {}),
+      disabled: false,
       children: [/*#__PURE__*/_jsx(View, {
+        pointerEvents: "none",
         style: [StyleSheet.absoluteFillObject, {
           backgroundColor: styles?.backgroundColor ?? TOAST_CONFIG[type][toastStyle].backgroundColor,
           borderLeftColor: toastStyle === 'secondary' ? TOAST_CONFIG[type][toastStyle].borderColor : 'transparent',
           borderLeftWidth: toastStyle === 'secondary' ? 5 : 0,
-          opacity: styles?.opacity ? isPressed ? Math.min(1, styles.opacity + 0.1) : styles.opacity : isPressed ? 1.0 : 0.9
+          opacity: styles?.opacity ? isPressed ? Math.min(1, styles.opacity + 0.1) : styles.opacity : isPressed ? 0.95 : 0.9
         }]
       }), /*#__PURE__*/_jsxs(View, {
         style: toastStyles.contentContainer,
@@ -290,7 +434,7 @@ export const Toast = ({
             minWidth: 0,
             paddingRight: 3
           }],
-          children: [title && (styles?.titleIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
+          children: [title ? styles?.titleIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
             contentWidth: htmlWidth || contentWidth,
             source: {
               html: `<span>${toBr(title ?? TOAST_CONFIG[type].title)}</span>`
@@ -299,38 +443,8 @@ export const Toast = ({
               fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
               color: styles?.titleColor ?? TOAST_CONFIG[type][toastStyle].titleColor
             },
-            tagsStyles: {
-              b: {
-                fontWeight: 'bold'
-              },
-              strong: {
-                fontWeight: 'bold'
-              },
-              i: {
-                fontStyle: 'italic'
-              },
-              em: {
-                fontStyle: 'italic'
-              },
-              u: {
-                textDecorationLine: 'underline'
-              },
-              a: {
-                color: styles?.linkColor ?? '#2E7DFF',
-                textDecorationLine: 'underline',
-                fontWeight: '500'
-              },
-              li: {
-                marginBottom: 2
-              }
-            },
-            renderersProps: {
-              a: {
-                onPress: (_, href) => {
-                  if (href) Linking.openURL(href).catch(() => {});
-                }
-              }
-            }
+            tagsStyles: memoizedTagsStyles,
+            renderersProps: memoizedRenderersProps
           }) : /*#__PURE__*/_jsx(Text, {
             style: [toastStyles.title, {
               fontSize: styles?.titleSize ?? TOAST_CONFIG[type].titleSize,
@@ -339,7 +453,7 @@ export const Toast = ({
               flexShrink: 1
             }],
             children: toNL(title ?? TOAST_CONFIG[type].title)
-          })), styles?.messageIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
+          }) : null, styles?.messageIsHtml ? /*#__PURE__*/_jsx(RenderHTML, {
             contentWidth: htmlWidth || contentWidth,
             source: {
               html: `<span>${toBr(message ?? TOAST_CONFIG[type].message)}</span>`
@@ -349,38 +463,8 @@ export const Toast = ({
               color: styles?.textColor ?? TOAST_CONFIG[type][toastStyle].textColor,
               fontWeight: title ? 'normal' : 'bold'
             },
-            tagsStyles: {
-              b: {
-                fontWeight: 'bold'
-              },
-              strong: {
-                fontWeight: 'bold'
-              },
-              i: {
-                fontStyle: 'italic'
-              },
-              em: {
-                fontStyle: 'italic'
-              },
-              u: {
-                textDecorationLine: 'underline'
-              },
-              a: {
-                color: styles?.linkColor ?? '#2E7DFF',
-                textDecorationLine: 'underline',
-                fontWeight: '500'
-              },
-              li: {
-                marginBottom: 2
-              }
-            },
-            renderersProps: {
-              a: {
-                onPress: (_, href) => {
-                  if (href) Linking.openURL(href).catch(() => {});
-                }
-              }
-            }
+            tagsStyles: memoizedTagsStyles,
+            renderersProps: memoizedRenderersProps
           }) : /*#__PURE__*/_jsx(Text, {
             style: [toastStyles.text, {
               fontSize: styles?.textSize ?? TOAST_CONFIG[type].textSize,
@@ -394,7 +478,9 @@ export const Toast = ({
           })]
         }), progress && /*#__PURE__*/_jsx(View, {
           style: toastStyles.progressContainer,
+          pointerEvents: "none",
           children: /*#__PURE__*/_jsx(Animated.View, {
+            ref: progressRef,
             style: [toastStyles.progressBar, animatedStyle, {
               backgroundColor: styles?.progressColor ?? TOAST_CONFIG[type][toastStyle].progressColor
             }]
