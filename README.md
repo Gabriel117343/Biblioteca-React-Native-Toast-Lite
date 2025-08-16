@@ -7,9 +7,9 @@
 ![Platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Web-blue.svg?style=flat-square)
 ![Web](https://img.shields.io/badge/Web-compatible-green.svg?style=flat-square)
 ![Expo](https://img.shields.io/badge/Expo-compatible-orange.svg?style=flat-square)
-![Stable Version](https://img.shields.io/badge/Stable%20Version-%E2%89%A5v2.0.4-brightgreen.svg?style=flat-square)
+![Stable Version](https://img.shields.io/badge/Stable%20Version-%E2%89%A5v2.0.5-brightgreen.svg?style=flat-square)
 
-**Versión:** `v2.0.4`
+**Versión:** `v2.0.5`
 
 ## Demostración
 

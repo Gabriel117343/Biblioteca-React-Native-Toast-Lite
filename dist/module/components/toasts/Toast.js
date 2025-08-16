@@ -86,6 +86,18 @@ export const Toast = ({
   }, [callbacks, id, progressValue, dismissedSV, autoHideSV, latestCreatedAtSV]);
 
   // ---- reanudar progreso ----
+  const pauseProgressSafe = () => {
+    // stop the progress animation and the JS fallback timeout while paused
+    cancelAnimation(progressValue);
+    if (progressRef.current?.setNativeProps) {
+      progressRef.current.setNativeProps({
+        style: {
+          opacity: 0.6
+        }
+      });
+    }
+    clearJsTimer();
+  };
   const resumeProgressSafe = () => {
     cancelAnimation(progressValue);
     const current = progressValue.value; // 0..115
@@ -98,6 +110,13 @@ export const Toast = ({
       if (callbacks?.onAutoHide) runOnJS(callbacks.onAutoHide)();
       closeToast();
     });
+
+    // reschedule JS fallback timer with the remaining time so total lifetime extends by paused duration
+    clearJsTimer();
+    jsKillTimerRef.current = setTimeout(() => {
+      if (dismissedSV.value === 1) return;
+      closeToast();
+    }, Math.max(0, remaining + 80));
     if (progressRef.current?.setNativeProps) {
       progressRef.current.setNativeProps({
         style: {
@@ -318,14 +337,7 @@ export const Toast = ({
         clearTimeout(pressPauseTimeoutRef.current);
       }
       pressPauseTimeoutRef.current = setTimeout(() => {
-        cancelAnimation(progressValue);
-        if (progressRef.current?.setNativeProps) {
-          progressRef.current.setNativeProps({
-            style: {
-              opacity: 0.6
-            }
-          });
-        }
+        pauseProgressSafe();
         pressedEverPausedRef.current = true;
       }, 120);
     }

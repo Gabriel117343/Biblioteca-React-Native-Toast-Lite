@@ -108,9 +108,9 @@ export const useToastStore = create((set, get) => ({
       styles: stylesPatch,
       ...rest
     } = patch;
-    const preserveProgress = patch.config.preserveProgress ?? true;
-    const inheritDuration = patch.config.inheritDuration ?? true;
-    const nextDuration = patch.config.nextDuration;
+    const preserveProgress = patch.config?.preserveProgress ?? true;
+    const inheritDuration = patch.config?.inheritDuration ?? true;
+    const nextDuration = patch.config?.nextDuration;
     set(state => {
       const idx = state.toasts.findIndex(t => t.id === id);
       if (idx === -1) return state;
@@ -176,6 +176,7 @@ export const useToastStore = create((set, get) => ({
   removeToastInstance: (id, createdAt) => set(state => ({
     toasts: state.toasts.filter(t => !(t.id === id && t.createdAt === createdAt))
   })),
+  // Obtener IDs activos
   getActiveIds: () => Array.from(new Set(get().toasts.map(t => t.id)))
 }));
 
@@ -193,5 +194,9 @@ export const toast = {
   // Dismiss por instancia (id + createdAt) — úsalo en auto-hide y swipe
   dismissInstance: (id, createdAt) => useToastStore.getState().removeToastInstance(id, createdAt),
   activeIds: () => useToastStore.getState().getActiveIds(),
-  update: patch => useToastStore.getState().updateToast(patch)
+  update: patch => useToastStore.getState().updateToast(patch),
+  clearAll: () => useToastStore.setState({
+    toasts: []
+  }),
+  getActiveIds: () => useToastStore.getState().getActiveIds()
 };

@@ -118,7 +118,7 @@ export type ToastUpdatePatch = {
   position?: ToastPosition; // opcional: por si querés moverlo
   type?: ToastType;
   duration?: number;
-  config: ToastUpdateOptions;
+  config?: ToastUpdateOptions;
 };
 
 /**

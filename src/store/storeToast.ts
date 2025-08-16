@@ -142,9 +142,9 @@ export const useToastStore = create<ToastState>((set, get) => ({
       styles: stylesPatch,
       ...rest
     } = patch;
-    const preserveProgress = patch.config.preserveProgress ?? true;
-    const inheritDuration = patch.config.inheritDuration ?? true;
-    const nextDuration = patch.config.nextDuration;
+    const preserveProgress = patch.config?.preserveProgress ?? true;
+    const inheritDuration = patch.config?.inheritDuration ?? true;
+    const nextDuration = patch.config?.nextDuration;
 
     set((state) => {
       const idx = state.toasts.findIndex((t) => t.id === id);
@@ -218,6 +218,7 @@ export const useToastStore = create<ToastState>((set, get) => ({
         (t) => !(t.id === id && t.createdAt === createdAt)
       ),
     })),
+  // Obtener IDs activos
   getActiveIds: () => Array.from(new Set(get().toasts.map((t) => t.id))),
 }));
 
@@ -245,4 +246,6 @@ export const toast = {
   activeIds: () => useToastStore.getState().getActiveIds(),
   update: (patch: ToastUpdatePatch) =>
     useToastStore.getState().updateToast(patch),
+  clearAll: () => useToastStore.setState({ toasts: [] }),
+  getActiveIds: () => useToastStore.getState().getActiveIds(),
 };
